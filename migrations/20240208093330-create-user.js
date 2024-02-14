@@ -21,7 +21,7 @@ module.exports = {
       is_teacher: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        default: false
+        defaultValue: false
       },
       student_id: {
         type: Sequelize.INTEGER
