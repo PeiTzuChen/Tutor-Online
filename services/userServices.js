@@ -10,7 +10,7 @@ module.exports = {
       err.name = 'Client error'
       throw cb(err)
     }
-    if (!(email & password)) {
+    if (!(email && password)) {
       const err = new Error('email or password is neccessary')
       err.status = 422
       err.name = 'Client error'

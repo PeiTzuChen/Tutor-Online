@@ -8,6 +8,15 @@ module.exports = {
           status: 'success'
         })
     })
+  },
+  signin: (req, res, next) => {
+    userServices.signin(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
-
 }
