@@ -4,10 +4,14 @@ const signInAuthenticate = (req, res, next) => {
     if (err) {
       return next(err)
     }
-    req.logIn(user, err => {
-      if (err) next(err)
+    const userJSON = user.toJSON()
+    req.logIn(userJSON, function (err) {
+      if (err) {
+        const err = new Error('user can\'t be written in req')
+        return next(err)
+      }
+      return next()
     })
-    next()
   })(req, res, next)
 }
 

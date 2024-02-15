@@ -5,7 +5,7 @@ const { routeErrorHandler } = require('../middlewares/errorHandler')
 const { signInAuthenticate } = require('../middlewares/auth')
 
 router.post('/signup', userController.signup)
-router.post('/signin', signInAuthenticate)
+router.post('/signin', signInAuthenticate, userController.signin)
 
 router.use(routeErrorHandler)
 module.exports = router

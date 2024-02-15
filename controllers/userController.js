@@ -1,4 +1,5 @@
 const userServices = require('../services/userServices')
+
 module.exports = {
   signup: (req, res, next) => {
     userServices.signup(req, (err, data) => {
@@ -10,12 +11,13 @@ module.exports = {
     })
   },
   signin: (req, res, next) => {
-    userServices.signin(req, (err, data) => {
+    userServices.signin(req, (err, token) => {
       err
         ? next(err)
         : res.status(200).json({
           status: 'success',
-          data
+          user: req.user,
+          token
         })
     })
   }

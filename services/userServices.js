@@ -1,6 +1,7 @@
 const db = require('../models')
 const { User } = db
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 module.exports = {
   signup: (req, cb) => {
     const { email, password, passwordCheck } = req.body
@@ -38,5 +39,22 @@ module.exports = {
       .catch((err) => {
         return cb(err)
       })
+  },
+  signin: (req, cb) => {
+    try {
+      const user = req.user
+      delete user.password
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      )
+      return cb(null, token)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
