@@ -1,6 +1,6 @@
 const userServices = require('../services/userServices')
 
-module.exports = {
+const userController = {
   signup: (req, res, next) => {
     userServices.signup(req, (err, data) => {
       err
@@ -22,3 +22,5 @@ module.exports = {
     })
   }
 }
+
+module.exports = userController

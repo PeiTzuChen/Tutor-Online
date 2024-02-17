@@ -2,7 +2,7 @@ const db = require('../models')
 const { User } = db
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-module.exports = {
+const userController = {
   signup: (req, cb) => {
     const { email, password, passwordCheck } = req.body
     if (password !== passwordCheck) {
@@ -58,3 +58,5 @@ module.exports = {
     }
   }
 }
+
+module.exports = userController
