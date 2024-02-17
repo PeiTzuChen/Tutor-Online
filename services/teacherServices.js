@@ -4,15 +4,41 @@ const { Teacher } = db
 const teacherServices = {
 
   getTeachers: (req, cb) => {
-    Teacher.findAll({ raw: true })
-      .then(teachers => {
-        if (teachers.length < 1) {
-          const err = new Error('no teachers data')
-          err.status = 404
-          throw err
-        }
-        return cb(null, teachers)
-      }).catch(err => cb(err))
+    const name = req.query.name
+    if (name) {
+      Teacher.findAll({ where: { name }, raw: true, attributes: ['id', 'name', 'country', 'introduction', 'style', 'avatar', 'link'] })
+        .then((teachers) => {
+          if (teachers.length < 1) {
+            const err = new Error("Can't find the teachers")
+            err.status = 404
+            throw err
+          }
+          return cb(null, teachers)
+        })
+        .catch((err) => cb(err))
+    } else {
+      Teacher.findAll({
+        raw: true,
+        attributes: [
+          'id',
+          'name',
+          'country',
+          'introduction',
+          'style',
+          'avatar',
+          'link'
+        ]
+      })
+        .then((teachers) => {
+          if (teachers.length < 1) {
+            const err = new Error('no teachers data')
+            err.status = 404
+            throw err
+          }
+          return cb(null, teachers)
+        })
+        .catch((err) => cb(err))
+    }
   }
 
 }
