@@ -31,7 +31,7 @@ const teacherServices = {
       })
         .then((teachers) => {
           if (teachers.length < 1) {
-            const err = new Error('no teachers data')
+            const err = new Error('doesn\'t have teachers data')
             err.status = 404
             throw err
           }

@@ -16,7 +16,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use('/api', route)
+app.use(route)
 
 app.listen(port, () =>
   console.log(`app listening on http://localhost:${port}`)
