@@ -5,7 +5,6 @@ const db = require('../models')
 const { User } = db
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
-passport.session(false)
 passport.use( // username && password 有值才會執行
   new LocalStrategy({ usernameField: 'email' }, (username, password, cb) => {
     User.findOne({ where: { email: username } })
@@ -49,14 +48,5 @@ passport.use( // Token有值且正確才會run
       })
   })
 )
-
-// 使用req.logIn 一定要搭配以下兩個
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
-})
-
-passport.deserializeUser((id, cb) => {
-  cb(null, id)
-})
 
 module.exports = passport

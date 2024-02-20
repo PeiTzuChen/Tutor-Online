@@ -10,15 +10,9 @@ const signInAuthenticate = (req, res, next) => {
       err.name = 'Client error'
       return next(err)
     }
-
     const userJSON = user.toJSON()
-    req.logIn(userJSON, function (err) {
-      if (err) {
-        const err = new Error('User can\'t be written in req')
-        return next(err)
-      }
-      return next()
-    })
+    req.user = userJSON
+    return next()
   })(req, res, next)
 }
 
@@ -29,13 +23,8 @@ const authenticated = (req, res, next) => {
       return next(err)
     }
     const userJSON = user.toJSON()
-    req.logIn(userJSON, (err) => {
-      if (err) {
-        const err = new Error("User can't be written in req")
-        return next(err)
-      }
-      return next()
-    })
+    req.user = userJSON
+    return next()
   })(req, res, next)
 }
 
