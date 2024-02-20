@@ -5,11 +5,12 @@ const { routeErrorHandler } = require('../middlewares/errorHandler')
 const { signInAuthenticate } = require('../middlewares/auth')
 const teacher = require('./teacher')
 const student = require('./student')
+const { authenticated } = require('../middlewares/auth')
 
 router.post('/signup', userController.signup)
 router.post('/signin', signInAuthenticate, userController.signin)
-router.use('/teachers', teacher)
-router.use('/students', student)
+router.use('/teachers', authenticated, teacher)
+router.use('/students', authenticated, student)
 
 router.use(routeErrorHandler)
 module.exports = router
