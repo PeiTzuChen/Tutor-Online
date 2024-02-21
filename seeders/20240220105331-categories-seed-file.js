@@ -5,8 +5,8 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'Categories',
-      ['生活英文', '商業英文', '旅遊英文', '兒童英文'].map((category) => ({
-        name: category,
+      ['生活英文', '商業英文', '旅遊英文', '兒童英文'].map((element) => ({
+        name: element,
         created_at: new Date(),
         updated_at: new Date()
       }))
