@@ -10,6 +10,16 @@ const teacherController = {
           data
         })
     })
+  },
+  postTeachers: (req, res, next) => {
+    teacherServices.postTeachers(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 

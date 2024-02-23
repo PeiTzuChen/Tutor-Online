@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
-const { routeErrorHandler } = require('../middlewares/errorHandler')
+const routeErrorHandler = require('../middlewares/errorHandler')
 const { signInAuthenticate } = require('../middlewares/auth')
 const teacher = require('./teacher')
 const student = require('./student')

@@ -1,8 +1,7 @@
 const db = require('../models')
-const { Teacher, Category } = db
-
+const { Teacher, Category, User } = db
+const localFileHandler = require('../helpers/file.helper')
 const teacherServices = {
-
   getTeachers: (req, cb) => {
     const { page } = req.query
     const { limit } = req.body
@@ -54,7 +53,44 @@ const teacherServices = {
         return cb(null, { count, teacherLimit })
       })
       .catch((err) => cb(err))
+  },
+  postTeachers: (req, cb) => {
+    const { name, country, introduction, style, link } = req.body
+    const file = req.file
+    const userId = req.user.id
+
+    if (req.user.teacherId) {
+      const err = new Error('This account has been teacher already')
+      err.status = 409
+      err.name = 'Client error'
+      throw err
+    }
+    if (!name) {
+      const err = new Error("Teacher's name is required")
+      err.status = 400
+      err.name = 'Client error'
+      throw err
+    }
+
+    localFileHandler(file)
+      .then(filePath => {
+        return Teacher.create({
+          name,
+          country,
+          introduction,
+          style,
+          avatar: filePath || null,
+          link
+        })
+      }).then(teacher => {
+        User.findByPk(userId)
+          .then(user =>
+            user.update({ teacherId: teacher.id })
+          )
+        return cb(null, teacher)
+      }).catch(err => cb(err))
   }
+
 }
 
 module.exports = teacherServices

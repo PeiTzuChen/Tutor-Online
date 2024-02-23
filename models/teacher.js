@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'teacherId',
         as: 'categoriesInTeacher'
       })
+      // Teacher.hasOne(models.User, { foreignKey: 'teacherId' })
     }
   }
   Teacher.init(
