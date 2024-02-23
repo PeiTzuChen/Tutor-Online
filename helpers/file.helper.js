@@ -1,12 +1,13 @@
-const fs = require('fs') // 引入 fs 模組
+const fs = require('fs')
 const path = require('path')
 const fspromises = fs.promises
 const localFileHandler = (file) => {
-  // file 是 multer 處理完的檔案，以下將temp資料透過fs方法，複製一份到upload資料夾
+  // 將temp資料透過fs緩衝方法，複製一份到upload資料夾，避免multer資料不完整
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
 
-    const fileName = path.join(__dirname, `../upload/${file.originalname}`) // 要寫入的圖片路徑
+    // 要寫入的圖片路徑
+    const fileName = path.join(__dirname, `../upload/${file.originalname}`)
     return fspromises
       .readFile(file.path)
       .then((data) => {
