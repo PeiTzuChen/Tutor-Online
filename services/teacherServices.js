@@ -54,6 +54,23 @@ const teacherServices = {
       })
       .catch((err) => cb(err))
   },
+  getTeacher: (req, cb) => {
+    const id = req.params
+    Teacher.findByPk(id, {
+      raw: true,
+      nest: true
+      // 還需增加comments關聯
+    })
+      .then(teacher => {
+        if (!teacher) {
+          const err = new Error('The teacher doesn\'t exit')
+          err.status = 400
+          err.name = 'Client error'
+          throw err
+        }
+        cb(null, teacher)
+      }).catch(err => cb(err))
+  },
   postTeachers: (req, cb) => {
     const { name, country, introduction, style, link } = req.body
     const file = req.file
