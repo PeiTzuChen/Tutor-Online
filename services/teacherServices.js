@@ -55,11 +55,10 @@ const teacherServices = {
       .catch((err) => cb(err))
   },
   getTeacher: (req, cb) => {
-    const id = req.params
+    const id = parseInt(req.params.id)
     Teacher.findByPk(id, {
       raw: true,
       nest: true
-      // 還需增加comments關聯
     })
       .then(teacher => {
         if (!teacher) {
