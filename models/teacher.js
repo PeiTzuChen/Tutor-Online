@@ -25,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       country: DataTypes.STRING,
       introduction: DataTypes.STRING(1234),
       style: DataTypes.STRING(1234),
-      avatar: DataTypes.STRING,
-      link: DataTypes.STRING
+      avatar: DataTypes.STRING
     },
     {
       sequelize,

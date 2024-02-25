@@ -18,11 +18,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      is_teacher: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      },
       student_id: {
         type: Sequelize.INTEGER
       },

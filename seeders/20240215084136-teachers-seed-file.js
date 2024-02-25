@@ -12,7 +12,7 @@ module.exports = {
         introduction: faker.lorem.paragraphs(),
         style: faker.lorem.paragraphs(),
         avatar: faker.image.avatar(),
-        link: faker.internet.url({ protocol: 'http', appendSlash: false }),
+        // link: faker.internet.url({ protocol: 'http', appendSlash: false }),
         created_at: new Date(),
         updated_at: new Date()
       })),
