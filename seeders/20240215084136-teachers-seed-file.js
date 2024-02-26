@@ -1,6 +1,6 @@
 'use strict'
 const { faker } = require('@faker-js/faker')
-const countryName = ['菲律賓', '歐洲', '美國', '澳洲', '加拿大']
+const countryName = ['歐洲', '美國', '澳洲', '加拿大']
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {

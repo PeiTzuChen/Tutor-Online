@@ -6,7 +6,7 @@ const teacherServices = {
     const { page } = req.query
     const { limit } = req.body
     Category.findAll({
-      where: { name: ['生活英文', '旅遊英文'] },
+      where: { id: [1, 3] },
       include: [
         {
           model: Teacher,
@@ -20,8 +20,7 @@ const teacherServices = {
             'country',
             'introduction',
             'style',
-            'avatar',
-            'link'
+            'avatar'
           ]
         }
       ]
@@ -36,7 +35,12 @@ const teacherServices = {
           )
           teachersTotal = teachersTotal.concat(teachersInCategory)
         })
-
+        if (teachersTotal.length < 1) {
+          const err = new Error('No teachers data')
+          err.status = 400
+          err.name = 'Client error'
+          throw err
+        }
         // 刪除重複的老師資料
         for (let i = 0; i < teachersTotal.length; i++) {
           for (let j = i + 1; j < teachersTotal.length; j++) {
@@ -114,6 +118,13 @@ const teacherServices = {
     const { name, country, introduction, style } = req.body
     const file = req.file
     const id = parseInt(req.params.id)
+
+    if (id !== req.user.teacherId) {
+      const err = new Error('permission denied')
+      err.status = 401
+      err.name = 'Client error'
+      throw err
+    }
     return Promise.all([
       Teacher.findByPk(id),
       localFileHandler(file)

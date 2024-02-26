@@ -6,7 +6,7 @@ const upload = multer({
   fileFilter (req, file, cb) {
     // 只接受三種圖片格式
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      const err = new Error('Only jpg、png、jpeg permitted')
+      const err = new Error('Only jpg, png, jpeg permitted')
       err.status = 400
       err.name = 'Client error'
       cb(err)
