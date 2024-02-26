@@ -19,10 +19,10 @@ const localFileHandler = (file) => {
 }
 
 // 要删除文件的目录
-const directoryPath = path.join(__dirname, './temp/')
+const directoryPath = path.join(__dirname, '../temp/')
 
-// 定期每一天删除文件的函数
-function deleteFiles () {
+// 删除文件的函数
+const deleteFiles = function () {
   fs.readdir(directoryPath, (err, files) => {
     if (err) {
       console.error('Error reading directory:', err)
@@ -40,7 +40,5 @@ function deleteFiles () {
     })
   })
 }
-setInterval(deleteFiles, 86400000)
 
-module.exports =
-  localFileHandler
+module.exports = { localFileHandler, deleteFiles }
