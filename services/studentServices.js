@@ -47,6 +47,36 @@ const studentServices = {
         return cb(null, student)
       })
       .catch((err) => cb(err))
+  },
+  putStudent: (req, cb) => {
+    const { name, introduction } = req.body
+    const file = req.file
+    const id = parseInt(req.params.id)
+    console.log(name)
+    if (id !== req.user.studentId) {
+      const err = new Error('permission denied')
+      err.status = 401
+      err.name = 'Client error'
+      throw err
+    }
+    return Promise.all([Student.findByPk(id), localFileHandler(file)])
+      .then(([student, filePath]) => {
+        if (!student) {
+          const err = new Error("The student doesn't exit")
+          err.status = 400
+          err.name = 'Client error'
+          throw err
+        }
+        return student.update({
+          name,
+          introduction,
+          avatar: filePath || undefined
+        })
+      })
+      .then((student) => {
+        return cb(null, student)
+      })
+      .catch((err) => cb(err))
   }
 }
 

@@ -20,6 +20,16 @@ const studentController = {
           data
         })
     })
+  },
+  putStudent: (req, res, next) => {
+    studentServices.putStudent(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 

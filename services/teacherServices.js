@@ -141,7 +141,7 @@ const teacherServices = {
           country,
           introduction,
           style,
-          avatar: filePath || null
+          avatar: filePath || undefined
         })
       })
       .then((teacher) => {
