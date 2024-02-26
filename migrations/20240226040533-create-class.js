@@ -1,0 +1,51 @@
+'use strict'
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    await queryInterface.createTable('Classes', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      is_booked: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      is_completed: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      length: {
+        type: Sequelize.INTEGER
+      },
+      date: {
+        type: Sequelize.DATE
+      },
+      link: {
+        type: Sequelize.STRING
+      },
+      student_id: {
+        type: Sequelize.INTEGER
+      },
+      teacher_id: {
+        type: Sequelize.INTEGER
+      },
+      category_id: {
+        type: Sequelize.INTEGER
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
+    })
+  },
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Classes')
+  }
+}

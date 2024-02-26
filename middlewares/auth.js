@@ -23,6 +23,7 @@ const authenticated = (req, res, next) => {
       return next(err)
     }
     const userJSON = user.toJSON()
+    delete userJSON.password
     req.user = userJSON
     return next()
   })(req, res, next)

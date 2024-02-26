@@ -4,6 +4,7 @@ const userController = require('../controllers/userController')
 const routeErrorHandler = require('../middlewares/errorHandler')
 const categoryController = require('../controllers/categoryController')
 const commentController = require('../controllers/commentController')
+const classController = require('../controllers/classController')
 const { signInAuthenticate } = require('../middlewares/auth')
 const teacher = require('./teacher')
 const student = require('./student')
@@ -22,6 +23,11 @@ router.get(
   '/comments/:teacherId',
   authenticated,
   commentController.getComments
+)
+router.post(
+  '/classes',
+  authenticated,
+  classController.postClass
 )
 router.use(routeErrorHandler)
 module.exports = router
