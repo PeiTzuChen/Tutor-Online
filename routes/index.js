@@ -3,6 +3,7 @@ const router = express.Router()
 const userController = require('../controllers/userController')
 const routeErrorHandler = require('../middlewares/errorHandler')
 const categoryController = require('../controllers/categoryController')
+const commentController = require('../controllers/commentController')
 const { signInAuthenticate } = require('../middlewares/auth')
 const teacher = require('./teacher')
 const student = require('./student')
@@ -17,6 +18,10 @@ router.post(
   authenticated,
   categoryController.postCategories
 )
-
+router.get(
+  '/comments/:teacherId',
+  authenticated,
+  commentController.getComments
+)
 router.use(routeErrorHandler)
 module.exports = router
