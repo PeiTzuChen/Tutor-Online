@@ -1,6 +1,6 @@
 const db = require('../models')
 const { Teacher, Category, User } = db
-const localFileHandler = require('../helpers/file.helper')
+const { localFileHandler } = require('../helpers/file.helper')
 const teacherServices = {
   getTeachers: (req, cb) => {
     const { page } = req.query

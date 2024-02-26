@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Comment.init({
-    totalScore: DataTypes.FLOAT,
+    score: DataTypes.FLOAT,
     text: DataTypes.STRING,
     studentId: DataTypes.INTEGER,
     teacherId: DataTypes.INTEGER

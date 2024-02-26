@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      total_score: {
+      score: {
         type: Sequelize.FLOAT,
         defaultValue: 0
       },

@@ -1,6 +1,6 @@
 const db = require('../models')
 const { Student, User } = db
-const localFileHandler = require('../helpers/file.helper')
+const { localFileHandler } = require('../helpers/file.helper')
 const studentServices = {
   getStudents: (req, cb) => {
     Student.findAll({ raw: true })
