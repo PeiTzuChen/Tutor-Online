@@ -14,6 +14,23 @@ const studentServices = {
       })
       .catch((err) => cb(err))
   },
+  getStudent: (req, cb) => {
+    const id = parseInt(req.params.id)
+    Student.findByPk(id, {
+      raw: true,
+      nest: true
+    })
+      .then((student) => {
+        if (!student) {
+          const err = new Error("The student doesn't exit")
+          err.status = 400
+          err.name = 'Client error'
+          throw err
+        }
+        cb(null, student)
+      })
+      .catch((err) => cb(err))
+  },
   postStudent: (req, cb) => {
     const { name, introduction } = req.body
     const file = req.file
