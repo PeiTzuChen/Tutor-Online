@@ -34,5 +34,10 @@ router.post(
   authenticated,
   classController.postClass
 )
+router.delete(
+  '/classes/:id',
+  authenticated,
+  classController.deleteClass
+)
 router.use(routeErrorHandler)
 module.exports = router

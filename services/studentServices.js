@@ -15,7 +15,7 @@ const studentServices = {
       .catch((err) => cb(err))
   },
   getStudent: (req, cb) => {
-    const id = parseInt(req.params.id)
+    const id = req.params.id
     Student.findByPk(id, {
       raw: true,
       nest: true
@@ -69,7 +69,7 @@ const studentServices = {
     const { name, introduction } = req.body
     const file = req.file
     const id = parseInt(req.params.id)
-    console.log(name)
+
     if (id !== req.user.studentId) {
       const err = new Error('permission denied')
       err.status = 401

@@ -62,7 +62,7 @@ const teacherServices = {
       .catch((err) => cb(err))
   },
   getTeacher: (req, cb) => {
-    const id = parseInt(req.params.id)
+    const id = req.params.id
     Teacher.findByPk(id, {
       raw: true,
       nest: true

@@ -10,6 +10,16 @@ const classController = {
           data
         })
     })
+  },
+  deleteClass: (req, res, next) => {
+    classServices.deleteClass(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 

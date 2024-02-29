@@ -50,6 +50,21 @@ const classServices = {
       }
       )
       .catch(err => cb(err))
+  },
+  deleteClass: (req, cb) => {
+    const id = req.params.id
+    Class.findByPk(id)
+      .then((aClass) => {
+        if (!aClass) {
+          const err = new Error("Class didn't exist!")
+          err.status = 404
+          throw err
+        }
+        return aClass.destroy()
+      })
+
+      .then((deletedClass) => cb(null, deletedClass))
+      .catch((err) => cb(err))
   }
 }
 
