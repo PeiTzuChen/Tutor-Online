@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Class } = db
+const { Class, Student } = db
 const { isOverlapping, classLength } = require('../helpers/date.helper')
 
 const classServices = {
@@ -21,6 +21,24 @@ const classServices = {
         return cb(null, classes)
       })
       .catch((err) => cb(err))
+  },
+  getTeacherClasses: (req, cb) => {
+    const teacherId = parseInt(req.params.teacherId)
+    Class.findAll({
+      attributes: ['length', 'dateTimeRange', 'name', 'link'],
+      where: { teacherId, isBooked: true },
+      include: { model: Student, attributes: ['name'] }
+    }).then(classes => {
+      if (classes.length < 1) {
+        const err = new Error('no classes data')
+        err.status = 404
+        throw err
+      }
+      const result = classes.map((aClass) => ({
+        ...aClass.toJSON()
+      }))
+      return cb(null, result)
+    }).catch(err => { cb(err) })
   },
   patchClasses: (req, cb) => {
     const teacherId = req.params.teacherId

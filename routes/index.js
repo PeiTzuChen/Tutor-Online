@@ -30,6 +30,11 @@ router.post(
   commentController.postComment
 )
 router.get(
+  '/classes/:teacherId/booked',
+  authenticated,
+  classController.getTeacherClasses
+)
+router.get(
   '/classes/:teacherId',
   authenticated,
   classController.getCreatedClasses
