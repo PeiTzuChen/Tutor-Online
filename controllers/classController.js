@@ -11,6 +11,16 @@ const classController = {
         })
     })
   },
+  patchClasses: (req, res, next) => {
+    classServices.patchClasses(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
   postClass: (req, res, next) => {
     classServices.postClass(req, (err, data) => {
       err

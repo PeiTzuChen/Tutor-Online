@@ -34,6 +34,11 @@ router.get(
   authenticated,
   classController.getCreatedClasses
 )
+router.patch(
+  '/classes/:teacherId',
+  authenticated,
+  classController.patchClasses
+)
 router.post(
   '/classes',
   authenticated,
