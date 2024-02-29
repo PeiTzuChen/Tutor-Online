@@ -50,7 +50,7 @@ const userController = {
           email: user.email
         },
         process.env.JWT_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: '30d' }
       )
       return cb(null, token)
     } catch (err) {

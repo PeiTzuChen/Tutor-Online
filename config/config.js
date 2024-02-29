@@ -4,7 +4,8 @@ module.exports = {
     password: 'password',
     database: 'tutor_online',
     host: '127.0.0.1',
-    dialect: 'mysql'
+    dialect: 'mysql',
+    timezone: '+08:00'
   },
   test: {
     username: 'root',

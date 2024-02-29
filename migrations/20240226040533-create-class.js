@@ -17,11 +17,14 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      name: {
+        type: Sequelize.STRING
+      },
       length: {
         type: Sequelize.INTEGER
       },
-      date: {
-        type: Sequelize.DATE
+      date_time_range: {
+        type: Sequelize.STRING
       },
       link: {
         type: Sequelize.STRING
@@ -41,7 +44,8 @@ module.exports = {
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        timestamps: true
       }
     })
   },
