@@ -3,7 +3,7 @@ const { Comment, Teacher } = db
 
 const commentServices = {
   getComments: (req, cb) => {
-    const teacherId = parseInt(req.params.teacherId)
+    const teacherId = req.params.teacherId
     Comment.findAll({ raw: true, where: { teacherId } })
       .then((comments) => {
         if (comments.length < 1) {

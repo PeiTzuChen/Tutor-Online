@@ -1,6 +1,16 @@
 const classServices = require('../services/classServices')
 
 const classController = {
+  getCreatedClasses: (req, res, next) => {
+    classServices.getCreatedClasses(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
   postClass: (req, res, next) => {
     classServices.postClass(req, (err, data) => {
       err
