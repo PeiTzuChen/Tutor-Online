@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Class, Student } = db
+const { Class, Student, Teacher } = db
 const { isOverlapping, classLength } = require('../helpers/date.helper')
 
 const classServices = {
@@ -23,22 +23,48 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getTeacherClasses: (req, cb) => {
-    const teacherId = parseInt(req.params.teacherId)
+    const teacherId = req.params.id
     Class.findAll({
       attributes: ['length', 'dateTimeRange', 'name', 'link'],
       where: { teacherId, isBooked: true },
       include: { model: Student, attributes: ['name'] }
-    }).then(classes => {
-      if (classes.length < 1) {
-        const err = new Error('no classes data')
-        err.status = 404
-        throw err
-      }
-      const result = classes.map((aClass) => ({
-        ...aClass.toJSON()
-      }))
-      return cb(null, result)
-    }).catch(err => { cb(err) })
+    })
+      .then((classes) => {
+        if (classes.length < 1) {
+          const err = new Error('no classes data')
+          err.status = 404
+          throw err
+        }
+        const result = classes.map((aClass) => ({
+          ...aClass.toJSON()
+        }))
+        return cb(null, result)
+      })
+      .catch((err) => {
+        cb(err)
+      })
+  },
+  getStudentClasses: (req, cb) => {
+    const studentId = req.params.id
+    Class.findAll({
+      attributes: ['length', 'dateTimeRange', 'name', 'link'],
+      where: { studentId, isBooked: true },
+      include: { model: Teacher, attributes: ['name'] }
+    })
+      .then((classes) => {
+        if (classes.length < 1) {
+          const err = new Error('no classes data')
+          err.status = 404
+          throw err
+        }
+        const result = classes.map((aClass) => ({
+          ...aClass.toJSON()
+        }))
+        return cb(null, result)
+      })
+      .catch((err) => {
+        cb(err)
+      })
   },
   patchClasses: (req, cb) => {
     const teacherId = req.params.teacherId
@@ -51,7 +77,7 @@ const classServices = {
       throw err
     }
     Class.findOne({ where: { teacherId, dateTimeRange } })
-      .then(aClass => {
+      .then((aClass) => {
         if (!aClass) {
           const err = new Error('no class data')
           err.status = 404
@@ -64,8 +90,8 @@ const classServices = {
         }
         return aClass.update({ isBooked: true, studentId })
       })
-      .then(aClass => cb(null, aClass))
-      .catch(err => cb(err))
+      .then((aClass) => cb(null, aClass))
+      .catch((err) => cb(err))
   },
   postClass: (req, cb) => {
     const { name, dateTimeRange, link } = req.body

@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       Teacher.hasOne(models.User, { foreignKey: 'teacherId' })
       Teacher.hasMany(models.Comment, { foreignKey: 'teacherId' })
+      Teacher.hasMany(models.Class, { foreignKey: 'teacherId' })
     }
   }
   Teacher.init(

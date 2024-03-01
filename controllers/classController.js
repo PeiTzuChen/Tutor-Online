@@ -21,6 +21,16 @@ const classController = {
         })
     })
   },
+  getStudentClasses: (req, res, next) => {
+    classServices.getStudentClasses(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
   patchClasses: (req, res, next) => {
     classServices.patchClasses(req, (err, data) => {
       err
