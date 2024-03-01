@@ -24,7 +24,7 @@ passport.use( // username && password 有值才會執行
               err.name = 'Client error'
               throw err
             }
-            return cb(null, user)
+            return cb(null, user.toJSON())
           })
           .catch((err) => cb(err))
       })
@@ -41,7 +41,7 @@ passport.use( // Token有值且正確才會run
   new JwtStrategy(jwtOpts, (jwtPayload, cb) => {
     User.findByPk(jwtPayload.id)
       .then((user) => {
-        return cb(null, user)
+        return cb(null, user.toJSON())
       })
       .catch((err) => {
         return cb(err)

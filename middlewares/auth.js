@@ -10,8 +10,7 @@ const signInAuthenticate = (req, res, next) => {
       err.name = 'Client error'
       return next(err)
     }
-    const userJSON = user.toJSON()
-    req.user = userJSON
+    req.user = user
     return next()
   })(req, res, next)
 }
@@ -22,14 +21,35 @@ const authenticated = (req, res, next) => {
       const err = new Error("JWT doesn't exist or is wrong")
       return next(err)
     }
-    const userJSON = user.toJSON()
-    delete userJSON.password
-    req.user = userJSON
+    if (user.isAdmin) {
+      return res.status(403)
+        .json({ status: 'error', message: 'permission denied' })
+    }
+    delete user.password
+    req.user = user
+    return next()
+  })(req, res, next)
+}
+
+const authenticatedAdmin = (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if (err || !user) {
+      const err = new Error("JWT doesn't exist or is wrong")
+      return next(err)
+    }
+    if (!user.isAdmin) {
+      return res
+        .status(403)
+        .json({ status: 'error', message: 'permission denied' })
+    }
+    delete user.password
+    req.user = user
     return next()
   })(req, res, next)
 }
 
 module.exports = {
   signInAuthenticate,
-  authenticated
+  authenticated,
+  authenticatedAdmin
 }

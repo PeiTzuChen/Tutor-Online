@@ -9,16 +9,20 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.Student, { foreignKey: 'studentId' })
     }
   }
-  User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    studentId: DataTypes.INTEGER,
-    teacherId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'User',
-    underscored: true,
-    tableName: 'Users'
-  })
+  User.init(
+    {
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN,
+      studentId: DataTypes.INTEGER,
+      teacherId: DataTypes.INTEGER
+    },
+    {
+      sequelize,
+      modelName: 'User',
+      underscored: true,
+      tableName: 'Users'
+    }
+  )
   return User
 }

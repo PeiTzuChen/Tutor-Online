@@ -20,6 +20,16 @@ const userController = {
           token
         })
     })
+  },
+  getUsers: (req, res, next) => {
+    userServices.getUsers(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 
