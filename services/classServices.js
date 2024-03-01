@@ -22,6 +22,28 @@ const classServices = {
       })
       .catch((err) => cb(err))
   },
+  getCompletedClasses: (req, cb) => {
+    const studentId = req.params.studentId
+    Class.findAll({
+      attributes: ['length', 'dateTimeRange', 'name'],
+      where: { studentId, isCompleted: true },
+      include: { model: Teacher, attributes: ['name', 'avatar'] }
+    })
+      .then((classes) => {
+        if (classes.length < 1) {
+          const err = new Error('no classes data')
+          err.status = 404
+          throw err
+        }
+        const result = classes.map((aClass) => ({
+          ...aClass.toJSON()
+        }))
+        return cb(null, result)
+      })
+      .catch((err) => {
+        cb(err)
+      })
+  },
   getTeacherClasses: (req, cb) => {
     const teacherId = req.params.id
     Class.findAll({

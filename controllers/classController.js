@@ -11,6 +11,16 @@ const classController = {
         })
     })
   },
+  getCompletedClasses: (req, res, next) => {
+    classServices.getCompletedClasses(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
   getTeacherClasses: (req, res, next) => {
     classServices.getTeacherClasses(req, (err, data) => {
       err
