@@ -1,9 +1,9 @@
 const db = require('../models')
-const { Student, User } = db
+const { Student, User, sequelize } = db
 const { localFileHandler } = require('../helpers/file.helper')
 const studentServices = {
   getStudents: (req, cb) => {
-    Student.findAll({ raw: true })
+    Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
       .then((students) => {
         if (students.length < 1) {
           const err = new Error('no students data')
@@ -17,8 +17,7 @@ const studentServices = {
   getStudent: (req, cb) => {
     const id = req.params.id
     Student.findByPk(id, {
-      raw: true,
-      nest: true
+      attributes: { include: [[sequelize.literal('(SELECT row_num FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY total_learning_time DESC) AS row_num FROM Students) AS ranked_row WHERE id=11) '), 'rank']] }
     })
       .then((student) => {
         if (!student) {
@@ -27,6 +26,7 @@ const studentServices = {
           err.name = 'Client error'
           throw err
         }
+
         cb(null, student)
       })
       .catch((err) => cb(err))
