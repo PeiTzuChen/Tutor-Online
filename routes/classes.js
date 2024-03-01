@@ -6,11 +6,11 @@ router.get(
   classController.getCompletedClasses
 )
 router.get(
-  '/teacherBooked/:id',
+  '/teacherbooked/:id',
   classController.getTeacherClasses
 )
 router.get(
-  '/studentBooked/:id',
+  '/studentbooked/:id',
   classController.getStudentClasses
 )
 

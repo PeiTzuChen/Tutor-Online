@@ -5,12 +5,6 @@ const { isOverlapping, classLength } = require('../helpers/date.helper')
 const classServices = {
   getCreatedClasses: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
-    const id = req.user.teacherId
-    if (id !== teacherId) {
-      const err = new Error('permission denied')
-      err.status = 401
-      throw err
-    }
     Class.findAll({ raw: true, where: { teacherId } })
       .then((classes) => {
         if (classes.length < 1) {
@@ -89,11 +83,12 @@ const classServices = {
       })
   },
   patchClasses: (req, cb) => {
-    const teacherId = req.params.teacherId
+    const teacherId = parseInt(req.params.teacherId)
     const studentId = parseInt(req.user.studentId)
     const { dateTimeRange } = req.body
-    // 不是學生不能預訂課程
-    if (!studentId) {
+
+    // 不是學生不能預訂課程,老師不能預訂自己的課
+    if (!studentId || req.user.teacherId === teacherId) {
       const err = new Error('permission denied')
       err.status = 401
       throw err
