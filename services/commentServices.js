@@ -4,7 +4,11 @@ const { Comment, Teacher } = db
 const commentServices = {
   getComments: (req, cb) => {
     const teacherId = req.params.teacherId
-    Comment.findAll({ raw: true, where: { teacherId } })
+    Comment.findAll({
+      raw: true,
+      where: { teacherId },
+      order: [['updatedAt', 'DESC']]
+    })
       .then((comments) => {
         if (comments.length < 1) {
           const err = new Error('no comments data')
