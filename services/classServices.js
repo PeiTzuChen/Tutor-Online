@@ -17,10 +17,10 @@ const classServices = {
           err.status = 404
           throw err
         }
-        const twoWeekClass = classes
-          .filter(aClass => { // 確認是否近兩週內
-            return withinWeek(aClass.dateTimeRange, 2) === true
-          })
+        const twoWeekClass = classes.filter((aClass) => {
+          // 確認是否近兩週內
+          return withinWeek(aClass.dateTimeRange, 2) === true
+        })
         const result = classOrder(twoWeekClass) // 按照課程先後順序排序
 
         return cb(null, result)
@@ -109,7 +109,7 @@ const classServices = {
     const { dateTimeRange } = req.body
 
     // 不是學生不能預訂課程,老師不能預訂自己的課
-    if (!studentId || req.user.teacherId === teacherId) {
+    if (!studentId || (req.user.teacherId === teacherId)) {
       const err = new Error('permission denied')
       err.status = 401
       throw err
@@ -163,8 +163,8 @@ const classServices = {
             throw err
           }
         }
-
         const length = classLength(dateTimeRange)
+
         return Class.create({
           name,
           dateTimeRange,
@@ -176,6 +176,45 @@ const classServices = {
       })
       .then((aClass) => {
         cb(null, aClass.toJSON())
+      })
+      .catch((err) => cb(err))
+  },
+  putClass: (req, cb) => {
+    const { name, dateTimeRange, link } = req.body
+    const teacherId = req.user.teacherId
+    const categoryId = parseInt(req.body.category)
+    const classId = req.params.id
+    if (!teacherId) {
+      // 若不是老師，不能修改課程
+      const err = new Error('permission denied')
+      err.status = 401
+      throw err
+    }
+    if (!(dateTimeRange && name && link)) {
+      // 三個都要存在才能新增課程
+      const err = new Error('Date, name and link of class are required')
+      err.status = 400
+      throw err
+    }
+    Class.findByPk(classId)
+      .then(aClass => {
+        if (!aClass) {
+          const err = new Error('Class didn\'t exist!')
+          err.status = 404
+          throw err
+        }
+        const length = classLength(dateTimeRange)
+
+        return aClass.update({
+          name,
+          dateTimeRange,
+          link,
+          length,
+          categoryId
+        })
+      })
+      .then((aClass) => {
+        cb(null, aClass)
       })
       .catch((err) => cb(err))
   },

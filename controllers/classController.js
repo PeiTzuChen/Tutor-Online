@@ -61,6 +61,16 @@ const classController = {
         })
     })
   },
+  putClass: (req, res, next) => {
+    classServices.putClass(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
   deleteClass: (req, res, next) => {
     classServices.deleteClass(req, (err, data) => {
       err

@@ -23,6 +23,7 @@ router.patch(
   classController.patchClasses
 )
 router.post('/', classController.postClass)
+router.put('/:id', classController.putClass)
 router.delete('/:id', classController.deleteClass)
 
 module.exports = router
