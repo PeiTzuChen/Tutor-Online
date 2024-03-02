@@ -74,6 +74,8 @@ const classServices = {
   getStudentClasses: (req, cb) => {
     const studentId = req.params.id
     Class.findAll({
+      raw: true,
+      nest: true,
       attributes: ['length', 'dateTimeRange', 'name', 'link'],
       where: { studentId, isBooked: true },
       include: { model: Teacher, attributes: ['name'] }
@@ -84,9 +86,12 @@ const classServices = {
           err.status = 404
           throw err
         }
-        const result = classes.map((aClass) => ({
-          ...aClass.toJSON()
-        }))
+        const oneWeekClass = classes.filter((aClass) => {
+          // 確認是否近一週內
+          return withinWeek(aClass.dateTimeRange, 1) === true
+        })
+        const result = classOrder(oneWeekClass) // 按照課程先後順序排序
+
         return cb(null, result)
       })
       .catch((err) => {
