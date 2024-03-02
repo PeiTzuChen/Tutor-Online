@@ -1,6 +1,11 @@
 const db = require('../models')
 const { Class, Student, Teacher } = db
-const { isOverlapping, classLength } = require('../helpers/date.helper')
+const {
+  isOverlapping,
+  classLength,
+  withinWeek,
+  classOrder
+} = require('../helpers/date.helper')
 
 const classServices = {
   getCreatedClasses: (req, cb) => {
@@ -12,7 +17,13 @@ const classServices = {
           err.status = 404
           throw err
         }
-        return cb(null, classes)
+        const twoWeekClass = classes
+          .filter(aClass => { // 確認是否近兩週內
+            return withinWeek(aClass.dateTimeRange, 2) === true
+          })
+        const result = classOrder(twoWeekClass) // 按照課程先後順序排序
+
+        return cb(null, result)
       })
       .catch((err) => cb(err))
   },

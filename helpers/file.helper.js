@@ -40,5 +40,6 @@ const deleteFiles = function () {
     })
   })
 }
+setInterval(deleteFiles, 3600000) // 每一小時刪除暫存temp資料
 
-module.exports = { localFileHandler, deleteFiles }
+module.exports = { localFileHandler }

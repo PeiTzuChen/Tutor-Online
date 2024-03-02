@@ -62,6 +62,7 @@ const userController = {
       raw: true,
       nest: true,
       attributes: ['id', 'email', 'studentId', 'teacherId'],
+      where: { isAdmin: false },
       include: [
         { model: Student, attributes: ['name'] },
         { model: Teacher, attributes: ['name'] }
