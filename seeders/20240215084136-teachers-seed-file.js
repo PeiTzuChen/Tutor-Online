@@ -6,13 +6,12 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'Teachers',
-      Array.from({ length: 20 }, () => ({
+      Array.from({ length: 10 }, () => ({
         name: faker.person.fullName(),
-        country: countryName[Math.floor(Math.random() * 5)],
+        country: countryName[Math.floor(Math.random() * 4)],
         introduction: faker.lorem.paragraphs(),
         style: faker.lorem.paragraphs(),
         avatar: faker.image.avatar(),
-        // link: faker.internet.url({ protocol: 'http', appendSlash: false }),
         created_at: new Date(),
         updated_at: new Date()
       })),

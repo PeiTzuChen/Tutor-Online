@@ -6,7 +6,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
       'Students',
-      Array.from({ length: 20 }, () => ({
+      Array.from({ length: 10 }, () => ({
         name: faker.person.fullName(),
         introduction: faker.lorem.paragraphs(),
         avatar: faker.image.avatar(),

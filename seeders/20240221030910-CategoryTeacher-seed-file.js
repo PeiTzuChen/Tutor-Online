@@ -14,7 +14,7 @@ module.exports = {
 
     await queryInterface.bulkInsert(
       'CategoryTeachers',
-      Array.from({ length: 50 }, () => ({
+      Array.from({ length: 20 }, () => ({
         teacher_id:
           teachersId[Math.floor(Math.random() * teachersId.length)].id,
         category_id:

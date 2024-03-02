@@ -23,7 +23,7 @@ const isOverlapping = function (existDate, date) {
   return true // 課程有重疊回傳true
 }
 
-// 計算課程時間
+// 計算課程時間，傳入2024-03-02 18:00-18:30，回傳30 or 60
 const classLength = function (date) {
   const [startTime, endTime] = parseDateTimeRange(date).slice(1, 3)
   const length =
