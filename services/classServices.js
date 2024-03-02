@@ -30,9 +30,10 @@ const classServices = {
   getCompletedClasses: (req, cb) => {
     const studentId = req.params.studentId
     Class.findAll({
-      attributes: ['length', 'dateTimeRange', 'name'],
+      attributes: ['length', 'dateTimeRange', 'name', 'updatedAt'],
       where: { studentId, isCompleted: true },
-      include: { model: Teacher, attributes: ['name', 'avatar'] }
+      include: { model: Teacher, attributes: ['name', 'avatar'] },
+      order: [['updatedAt', 'DESC']]
     })
       .then((classes) => {
         if (classes.length < 1) {
