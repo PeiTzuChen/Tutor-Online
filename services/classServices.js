@@ -181,6 +181,11 @@ const classServices = {
   },
   deleteClass: (req, cb) => {
     const id = req.params.id
+    if (!req.user.teacherId) {
+      const err = new Error('permission denied')
+      err.status = 401
+      throw err
+    }
     Class.findByPk(id)
       .then((aClass) => {
         if (!aClass) {
@@ -188,9 +193,13 @@ const classServices = {
           err.status = 404
           throw err
         }
+        if (aClass.isCompleted) {
+          const err = new Error("You can't delete a completed class")
+          err.status = 400
+          throw err
+        }
         return aClass.destroy()
       })
-
       .then((deletedClass) => cb(null, deletedClass))
       .catch((err) => cb(err))
   }
