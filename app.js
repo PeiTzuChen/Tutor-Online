@@ -12,7 +12,7 @@ const { Server } = require('socket.io')
 app.use((req, res, next) => {
   res.setHeader(
     'Access-Control-Allow-Origin',
-    'https://tutoring-platform-becky.vercel.app, http://192.168.1.103,https://192.168.1.103'
+    '*'
   )
   res.setHeader(
     'Access-Control-Allow-Methods',
