@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
 const routeErrorHandler = require('../middlewares/errorHandler')
-const categoryController = require('../controllers/categoryController')
 const commentController = require('../controllers/commentController')
 const {
   authenticated,
@@ -19,11 +18,7 @@ router.get('/admin/users', authenticatedAdmin, userController.getUsers)
 router.use('/teachers', authenticated, teacher)
 router.use('/students', authenticated, student)
 router.use('/classes', authenticated, classes)
-router.post(
-  '/categories/:teacherId',
-  authenticated,
-  categoryController.postCategories
-)
+
 router.get(
   '/comments/:teacherId',
   authenticated,

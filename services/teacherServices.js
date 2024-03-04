@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Teacher, Category, User } = db
+const { Teacher, Category, User, CategoryTeacher } = db
 const { localFileHandler } = require('../helpers/file.helper')
 const teacherServices = {
   getTeachers: (req, cb) => {
@@ -80,9 +80,6 @@ const teacherServices = {
   },
   postTeacher: (req, cb) => {
     const { name, country, introduction, style } = req.body
-    const file = req.file
-    const userId = req.user.id
-
     if (req.user.teacherId) {
       const err = new Error('This account has been teacher already')
       err.status = 409
@@ -95,6 +92,8 @@ const teacherServices = {
       err.name = 'Client error'
       throw err
     }
+    const file = req.file
+    const userId = req.user.id
 
     localFileHandler(file)
       .then((filePath) => {
@@ -107,6 +106,13 @@ const teacherServices = {
         })
       })
       .then((teacher) => {
+        const categories = JSON.parse(req.body.categoryArray).map(
+          (categoryId) => ({
+            teacherId: teacher.id,
+            categoryId: parseInt(categoryId)
+          })
+        )
+        CategoryTeacher.bulkCreate(categories)
         User.findByPk(userId).then((user) =>
           user.update({ teacherId: teacher.id })
         )
