@@ -121,19 +121,19 @@ const teacherServices = {
       .catch((err) => cb(err))
   },
   putTeacher: (req, cb) => {
-    const { name, country, introduction, style } = req.body
-    const file = req.file
     const id = parseInt(req.params.id)
-
     if (id !== req.user.teacherId) {
       const err = new Error('permission denied')
       err.status = 401
       err.name = 'Client error'
       throw err
     }
+    const { name, country, introduction, style } = req.body
+    const file = req.file
     return Promise.all([
       Teacher.findByPk(id),
-      localFileHandler(file)
+      localFileHandler(file),
+      CategoryTeacher.destroy({ where: { teacherId: id } })
     ])
       .then(([teacher, filePath]) => {
         if (!teacher) {
@@ -142,6 +142,13 @@ const teacherServices = {
           err.name = 'Client error'
           throw err
         }
+        const categories = JSON.parse(req.body.categoryArray).map(
+          (categoryId) => ({
+            teacherId: teacher.id,
+            categoryId: parseInt(categoryId)
+          })
+        )
+        CategoryTeacher.bulkCreate(categories)
         return teacher.update({
           name,
           country,
