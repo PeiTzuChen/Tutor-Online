@@ -19,6 +19,10 @@ router.use('/teachers', authenticated, teacher)
 router.use('/students', authenticated, student)
 router.use('/classes', authenticated, classes)
 
+router.get('/socket', (req, res, next) => {
+  res.render('index')
+})
+
 router.get(
   '/comments/:teacherId',
   authenticated,
