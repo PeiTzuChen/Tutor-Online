@@ -33,28 +33,58 @@ const commentServices = {
     return Promise.all([
       Teacher.findByPk(teacherId),
       Comment.findOne({ where: { studentId, teacherId } })
-    ]).then(([teacher, comment]) => {
-      if (comment) {
-        const err = new Error('Comment already exists!')
-        err.status = 400
-        throw err
-      }
-      if (!teacher) {
-        const err = new Error("Teacher didn't exist!")
-        err.status = 400
-        throw err
-      }
-      return Comment.create({
-        text,
-        score,
-        studentId,
-        teacherId
+    ])
+      .then(([teacher, comment]) => {
+        if (comment) {
+          const err = new Error('Comment already exists!')
+          err.status = 400
+          throw err
+        }
+        if (!teacher) {
+          const err = new Error("Teacher didn't exist!")
+          err.status = 400
+          throw err
+        }
+        return Comment.create({
+          text,
+          score,
+          studentId,
+          teacherId
+        })
       })
-    }).then(comment => {
-      cb(null, comment)
-    }).catch(err => cb(err))
-  }
+      .then((comment) => {
+        cb(null, comment)
+      })
+      .catch((err) => cb(err))
+  },
+  putComment: (req, cb) => {
+    const commentId = req.params.commentId
+    const { text } = req.body
+    const score = Number(req.body.score)
 
+    if (!text) {
+      const err = new Error('Text is required')
+      err.status = 400
+      throw err
+    }
+
+    Comment.findByPk(commentId)
+      .then((comment) => {
+        if (!comment) {
+          const err = new Error("Comment didn't exist!")
+          err.status = 400
+          throw err
+        }
+        return comment.update({
+          text,
+          score
+        })
+      })
+      .then((comment) => {
+        cb(null, comment)
+      })
+      .catch((err) => cb(err))
+  }
 }
 
 module.exports = commentServices

@@ -29,6 +29,11 @@ router.post(
   authenticated,
   commentController.postComment
 )
+router.put(
+  '/comments/:commentId',
+  authenticated,
+  commentController.putComment
+)
 
 router.use(routeErrorHandler)
 module.exports = router

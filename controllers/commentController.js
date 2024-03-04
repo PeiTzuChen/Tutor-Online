@@ -20,6 +20,16 @@ const commentController = {
           data
         })
     })
+  },
+  putComment: (req, res, next) => {
+    commentServices.putComment(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 
