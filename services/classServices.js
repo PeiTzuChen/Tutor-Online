@@ -81,7 +81,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['length', 'dateTimeRange', 'name', 'link'],
+      attributes: ['id', 'length', 'dateTimeRange', 'name', 'link'],
       where: { studentId, isBooked: true },
       include: { model: Teacher, attributes: ['name'] }
     })
@@ -103,13 +103,34 @@ const classServices = {
         cb(err)
       })
   },
+  patchStudentClasses: (req, cb) => {
+    const classId = req.params.id
+    Class.findByPk(classId)
+      .then((aClass) => {
+        if (!aClass) {
+          const err = new Error('no class data')
+          err.status = 404
+          throw err
+        }
+        if (req.user.studentId !== aClass.studentId) {
+          const err = new Error('permission denied')
+          err.status = 401
+          throw err
+        }
+        return aClass.update({ isBooked: false, studentId: null })
+      })
+      .then((unBookedClass) => cb(null, unBookedClass.toJSON()))
+      .catch((err) => {
+        cb(err)
+      })
+  },
   patchClasses: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
     const studentId = parseInt(req.user.studentId)
     const { dateTimeRange } = req.body
 
     // 不是學生不能預訂課程,老師不能預訂自己的課
-    if (!studentId || (req.user.teacherId === teacherId)) {
+    if (!studentId || req.user.teacherId === teacherId) {
       const err = new Error('permission denied')
       err.status = 401
       throw err
@@ -197,9 +218,9 @@ const classServices = {
       throw err
     }
     Class.findByPk(classId)
-      .then(aClass => {
+      .then((aClass) => {
         if (!aClass) {
-          const err = new Error('Class didn\'t exist!')
+          const err = new Error("Class didn't exist!")
           err.status = 404
           throw err
         }

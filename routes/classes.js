@@ -13,6 +13,7 @@ router.get(
   '/studentbooked/:id',
   classController.getStudentClasses
 )
+router.patch('/studentbooked/:id', classController.patchStudentClasses)
 
 router.get(
   '/:teacherId',
