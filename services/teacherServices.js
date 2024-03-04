@@ -64,8 +64,7 @@ const teacherServices = {
   getTeacher: (req, cb) => {
     const id = req.params.id
     Teacher.findByPk(id, {
-      raw: true,
-      nest: true
+      include: { model: Category, as: 'categoriesInTeacher' }
     })
       .then((teacher) => {
         if (!teacher) {
@@ -74,7 +73,18 @@ const teacherServices = {
           err.name = 'Client error'
           throw err
         }
-        cb(null, teacher)
+        const teacherData = teacher.dataValues
+        const result = {
+          id: teacherData.id,
+          name: teacherData.name,
+          country: teacherData.country,
+          introduction: teacherData.introduction,
+          style: teacherData.style,
+          avatar: teacherData.avatar,
+          categoryId: teacherData.categoriesInTeacher.map((category) =>
+            category.id)
+        }
+        cb(null, result)
       })
       .catch((err) => cb(err))
   },
