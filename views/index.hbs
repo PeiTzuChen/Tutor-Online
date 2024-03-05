@@ -1,7 +1,32 @@
-<h1>hi</h1>
+<div class="dialog">
+</div>
 
+
+<form action="">
+<input type="text">
+<button type="submit">send message</button>
+</form>
 
 <script>
   const socket = io('http://localhost:3000'); //寫網域
   socket.on('connection')
+
+const form = document.querySelector('form');
+const input = document.querySelector('input');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (input.value) {
+      socket.emit('message', socket.id, input.value)
+      const newElement = document.createElement('h3')
+      const parentElement = document.querySelector('.dialog')
+      parentElement.innerHTML += `<h3 style="text-align:end;">我的訊息：${input.value}</h3>`
+    }
+  });
+  socket.on('message',(id,data)=>{
+    const newElement = document.createElement('h3')
+      const parentElement = document.querySelector('.dialog')
+      parentElement.innerHTML += `<h3 style="text-align:start;">使用者${id}說:${data}</h3>`
+  })
+
 </script>
