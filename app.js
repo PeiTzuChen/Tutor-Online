@@ -22,6 +22,10 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
   )
+  res.setHeader(
+    'Access-Control-Expose-Headers',
+    '*'
+  )
   next()
 })
 
