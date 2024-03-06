@@ -12,10 +12,13 @@ const { createClient } = require('redis')
 // http://192.168.1.103:3000
 // cross-origin
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*', 'http://192.168.186.152:3000')
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'http://192.168.186.152:3000, https://tutoring-platform-becky.vercel.app/, http://192.168.1.103:3000'
+  )
   res.setHeader(
     'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, PATCH')
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
