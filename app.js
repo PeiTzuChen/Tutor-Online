@@ -24,11 +24,12 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
   )
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end()
-  }
+  // if (req.method === 'OPTIONS') {
+  //   return res.status(200).end()
+  // }
   next()
 })
+app.options("*", (req, res, next) => res.status(200));
 
 const { engine } = require('express-handlebars')
 app.engine('.hbs', engine({ extname: '.hbs' }))
