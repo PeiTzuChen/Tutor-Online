@@ -14,7 +14,7 @@ const { createClient } = require('redis')
 app.use((req, res, next) => {
   res.setHeader(
     'Access-Control-Allow-Origin',
-    'http://192.168.186.152:3000, https://tutoring-platform-becky.vercel.app/, http://192.168.1.103:3000'
+    'http://192.168.186.152:3000, https://tutoring-platform-becky.vercel.app, http://192.168.1.103:3000'
   )
   res.setHeader(
     'Access-Control-Allow-Methods',
