@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
   )
-  if (req.method === 'OPTIONS') return next()
+  if (req.method === 'OPTIONS') return res.status(200)
   next()
 })
 
