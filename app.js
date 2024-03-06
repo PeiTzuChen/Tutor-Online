@@ -9,27 +9,25 @@ const server = http.Server(app)
 const { Server } = require('socket.io')
 
 const { createClient } = require('redis')
-// http://192.168.1.103:3000
-// cross-origin
-// app.options('*', (req, res, next) => res.status(200))
 
+// cross-origin
 app.use((req, res, next) => {
   res.setHeader(
     'Access-Control-Allow-Origin', 'https://tutoring-platform-becky.vercel.app'
   )
   res.setHeader(
     'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+    'GET, POST, PUT, DELETE, PATCH')
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
+    'Content-Type, Authorization, Accept, Accept-Encoding'
   )
   // if (req.method === 'OPTIONS') {
   //   return res.status(200).end()
   // }
   next()
 })
-app.options("*", (req, res, next) => res.status(200));
+app.options('*', (req, res, next) => res.status(200).end())
 
 const { engine } = require('express-handlebars')
 app.engine('.hbs', engine({ extname: '.hbs' }))
