@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
+    '*'
   )
   next()
 })
