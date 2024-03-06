@@ -7,13 +7,16 @@ const route = require('./routes')
 const passport = require('./config/passport')
 const server = http.Server(app)
 const { Server } = require('socket.io')
-
 const { createClient } = require('redis')
 
 // cross-origin
 app.use((req, res, next) => {
+  // res.setHeader(
+  //   'Access-Control-Allow-Origin', 'https://tutoring-platform-becky.vercel.app'
+  // )
   res.setHeader(
-    'Access-Control-Allow-Origin', 'https://tutoring-platform-becky.vercel.app'
+    'Access-Control-Allow-Origin',
+    '*'
   )
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -22,11 +25,14 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding'
   )
+
+  // 晚上測試寫在前面，setHearder會不會讀到
   // if (req.method === 'OPTIONS') {
   //   return res.status(200).end()
   // }
   next()
 })
+
 app.options('*', (req, res, next) => res.status(200).end())
 
 const { engine } = require('express-handlebars')
