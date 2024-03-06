@@ -11,7 +11,7 @@ const { Server } = require('socket.io')
 const { createClient } = require('redis')
 // http://192.168.1.103:3000
 // cross-origin
-app.options('*', (req, res, next) => res.status(200))
+// app.options('*', (req, res, next) => res.status(200))
 
 app.use((req, res, next) => {
   res.setHeader(
@@ -24,6 +24,9 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
   )
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
   next()
 })
 
