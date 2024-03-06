@@ -16,7 +16,7 @@ router.post('/signup', userController.signup)
 router.post('/signin', signInAuthenticate, userController.signin)
 router.get('/admin/users', authenticatedAdmin, userController.getUsers)
 router.use('/teachers', authenticated, teacher)
-router.use('/students', student)
+router.use('/students', authenticated, student)
 router.use('/classes', authenticated, classes)
 
 router.get('/socket', (req, res, next) => {
