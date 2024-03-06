@@ -9,16 +9,16 @@ const server = http.Server(app)
 const { Server } = require('socket.io')
 
 const { createClient } = require('redis')
-//http://192.168.1.103:3000
+// http://192.168.1.103:3000
 // cross-origin
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Origin', '*', 'http://192.168.186.152:3000')
   res.setHeader(
     'Access-Control-Allow-Methods',
     'GET, POST, PUT, DELETE, PATCH')
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Accept, Accept-Encoding'
+    'Content-Type, Authorization, Accept, Accept-Encoding,authorization'
   )
   next()
 })
