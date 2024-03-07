@@ -2,57 +2,96 @@ const db = require('../models')
 const { Teacher, Category, User, CategoryTeacher } = db
 const { localFileHandler } = require('../helpers/file.helper')
 const teacherServices = {
+  // getTeachers: (req, cb) => {
+  //   const { page } = req.query
+  //   const { limit } = req.body
+  //   Category.findAll({
+  //     where: { id: [1, 3] },
+  //     include: [
+  //       {
+  //         model: Teacher,
+  //         as: 'teachersInCategory',
+  //         where: {
+  //           country: ['加拿大', '菲律賓']
+  //         },
+  //         attributes: [
+  //           'id',
+  //           'name',
+  //           'country',
+  //           'introduction',
+  //           'style',
+  //           'avatar'
+  //         ]
+  //       }
+  //     ]
+  //   })
+  //     .then((categories) => {
+  //       let teachersTotal = [] // 蒐集老師總筆數
+  //       categories.forEach((element) => {
+  //         const teachersInCategory = element.teachersInCategory.map(
+  //           (teacher) => ({
+  //             ...teacher.toJSON()
+  //           })
+  //         )
+  //         teachersTotal = teachersTotal.concat(teachersInCategory)
+  //       })
+  //       if (teachersTotal.length < 1) {
+  //         const err = new Error('No teachers data')
+  //         err.status = 400
+  //         err.name = 'Client error'
+  //         throw err
+  //       }
+  //       // 刪除重複的老師資料
+  //       for (let i = 0; i < teachersTotal.length; i++) {
+  //         for (let j = i + 1; j < teachersTotal.length; j++) {
+  //           if (teachersTotal[i].id === teachersTotal[j].id) {
+  //             teachersTotal.splice(j, 1) // 刪除
+  //           }
+  //         }
+  //         if (teachersTotal[i]) {
+  //           delete teachersTotal[i].CategoryTeacher // 刪除物件多餘property
+  //         }
+  //       }
+  //       const count = teachersTotal.length // 最後剩下總筆數
+  //       const teacherLimit = teachersTotal.splice(
+  //         (page - 1) * limit,
+  //         page * limit
+  //       ) // 第page頁，呈現limit筆的老師資料
+  //       return cb(null, { count, teacherLimit })
+  //     })
+  //     .catch((err) => cb(err))
+  // },
   getTeachers: (req, cb) => {
     const { page } = req.query
     const { limit } = req.body
-    Category.findAll({
+    Teacher.findAll({
       include: [
         {
-          model: Teacher,
-          as: 'teachersInCategory',
-          attributes: [
-            'id',
-            'name',
-            'country',
-            'introduction',
-            'style',
-            'avatar'
-          ]
+          model: Category,
+          as: 'categoriesInTeacher'
         }
-      ]
+      ],
+      attributes: ['id', 'name', 'country', 'introduction', 'style', 'avatar']
     })
-      .then((categories) => {
-        let teachersTotal = [] // 蒐集老師總筆數
-        categories.forEach((element) => {
-          const teachersInCategory = element.teachersInCategory.map(
-            (teacher) => ({
-              ...teacher.toJSON()
-            })
-          )
-          teachersTotal = teachersTotal.concat(teachersInCategory)
-        })
-        if (teachersTotal.length < 1) {
+      .then((teachers) => {
+        if (teachers.length < 1) {
           const err = new Error('No teachers data')
           err.status = 400
-          err.name = 'Client error'
           throw err
         }
-        // 刪除重複的老師資料
-        for (let i = 0; i < teachersTotal.length; i++) {
-          for (let j = i + 1; j < teachersTotal.length; j++) {
-            if (teachersTotal[i].id === teachersTotal[j].id) {
-              teachersTotal.splice(j, 1) // 刪除
-            }
-          }
-          if (teachersTotal[i]) {
-            delete teachersTotal[i].CategoryTeacher // 刪除物件多餘property
-          }
-        }
-        const count = teachersTotal.length // 最後剩下總筆數
-        const teacherLimit = teachersTotal.splice(
-          (page - 1) * limit,
-          page * limit
-        ) // 第page頁，呈現limit筆的老師資料
+        const result = teachers.map((teacher) => ({
+          id: teacher.id,
+          name: teacher.name,
+          country: teacher.country,
+          introduction: teacher.introduction,
+          style: teacher.style,
+          avatar: teacher.avatar,
+          categories: teacher.categoriesInTeacher.map(
+            (category) => category.id
+          )
+        }))
+        const count = teachers.length // 總筆數
+        const teacherLimit = result.splice((page - 1) * limit, page * limit) // 第page頁，呈現limit筆的老師資料
         return cb(null, { count, teacherLimit })
       })
       .catch((err) => cb(err))
@@ -80,7 +119,7 @@ const teacherServices = {
           categoryId: teacherData.categoriesInTeacher.map((category) =>
             category.id)
         }
-        cb(null, result)
+        return cb(null, result)
       })
       .catch((err) => cb(err))
   },
