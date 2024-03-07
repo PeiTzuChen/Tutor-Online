@@ -62,8 +62,7 @@ const teacherServices = {
   //     .catch((err) => cb(err))
   // },
   getTeachers: (req, cb) => {
-    const { page } = req.query
-    const { limit } = req.body
+    const { page, limit } = req.query
     Teacher.findAll({
       include: [
         {
