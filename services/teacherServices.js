@@ -6,14 +6,10 @@ const teacherServices = {
     const { page } = req.query
     const { limit } = req.body
     Category.findAll({
-      where: { id: [1, 3] },
       include: [
         {
           model: Teacher,
           as: 'teachersInCategory',
-          where: {
-            country: ['加拿大', '菲律賓']
-          },
           attributes: [
             'id',
             'name',
