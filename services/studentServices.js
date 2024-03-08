@@ -69,7 +69,7 @@ const studentServices = {
     const { name, introduction } = req.body
     const file = req.file
     const id = parseInt(req.params.id)
-
+    console.log('接file', file)
     if (id !== req.user.studentId) {
       const err = new Error('permission denied')
       err.status = 401
@@ -84,6 +84,7 @@ const studentServices = {
           err.name = 'Client error'
           throw err
         }
+        console.log('接filePath', filePath)
         return student.update({
           name,
           introduction,
