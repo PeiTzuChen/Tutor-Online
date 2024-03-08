@@ -36,18 +36,18 @@ const studentServices = {
     const file = req.file
     const userId = req.user.id
 
-    if (req.user.studentId) {
-      const err = new Error('This account has been student already')
-      err.status = 409
-      err.name = 'Client error'
-      throw err
-    }
-    if (!name) {
-      const err = new Error("student's name is required")
-      err.status = 400
-      err.name = 'Client error'
-      throw err
-    }
+    // if (req.user.studentId) {
+    //   const err = new Error('This account has been student already')
+    //   err.status = 409
+    //   err.name = 'Client error'
+    //   throw err
+    // }
+    // if (!name) {
+    //   const err = new Error("student's name is required")
+    //   err.status = 400
+    //   err.name = 'Client error'
+    //   throw err
+    // }
 
     localFileHandler(file)
       .then((filePath) => {
