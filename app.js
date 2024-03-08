@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   // }
   next()
 })
-
+app.use('/upload', express.static('upload'))
 app.options('*', (req, res, next) => res.status(200).end())
 
 const { engine } = require('express-handlebars')

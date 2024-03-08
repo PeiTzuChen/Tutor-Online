@@ -7,7 +7,9 @@ const localFileHandler = (file) => {
     if (!file) return resolve(null)
 
     // 要寫入的圖片路徑
+
     const fileName = path.join(__dirname, `../upload/${file.originalname}`)
+
     return fspromises
       .readFile(file.path)
       .then((data) => {
