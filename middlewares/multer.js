@@ -1,8 +1,9 @@
 const multer = require('multer')
-const path = require('path')
+// const path = require('path')
 
 const upload = multer({
-  dest: path.join(__dirname, '../temp/'),
+  // dest: path.join(__dirname, '../temp/'),
+  dest: 'temp/',
   fileFilter (req, file, cb) {
     // 只接受三種圖片格式
     if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
