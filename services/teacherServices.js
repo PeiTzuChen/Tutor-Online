@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Teacher, Category, User, CategoryTeacher } = db
+const { Teacher, Category, User, CategoryTeacher, Comment } = db
 const { localFileHandler } = require('../helpers/file.helper')
 const teacherServices = {
   // getTeachers: (req, cb) => {
@@ -98,9 +98,18 @@ const teacherServices = {
   getTeacher: (req, cb) => {
     const id = req.params.id
     Teacher.findByPk(id, {
-      include: { model: Category, as: 'categoriesInTeacher' }
+      include: [
+        { model: Category, as: 'categoriesInTeacher' },
+        { model: Comment }
+      ]
     })
       .then((teacher) => {
+        const commentCount = teacher.dataValues.Comments.length
+        let commentAvg = 0
+        teacher.dataValues.Comments.forEach(element => {
+          commentAvg += element.toJSON().score
+        })
+
         if (!teacher) {
           const err = new Error("The teacher doesn't exit")
           err.status = 400
@@ -115,8 +124,10 @@ const teacherServices = {
           introduction: teacherData.introduction,
           style: teacherData.style,
           avatar: teacherData.avatar,
-          categoryId: teacherData.categoriesInTeacher.map((category) =>
-            category.id)
+          categoryId: teacherData.categoriesInTeacher.map(
+            (category) => category.id
+          ),
+          ScoreAvg: commentCount ? commentAvg / commentCount : null
         }
         return cb(null, result)
       })
