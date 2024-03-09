@@ -36,21 +36,22 @@ const studentServices = {
     const file = req.file
     const userId = req.user.id
 
-    // if (req.user.studentId) {
-    //   const err = new Error('This account has been student already')
-    //   err.status = 409
-    //   err.name = 'Client error'
-    //   throw err
-    // }
-    // if (!name) {
-    //   const err = new Error("student's name is required")
-    //   err.status = 400
-    //   err.name = 'Client error'
-    //   throw err
-    // }
-
+    if (req.user.studentId) {
+      const err = new Error('This account has been student already')
+      err.status = 409
+      err.name = 'Client error'
+      throw err
+    }
+    if (!name) {
+      const err = new Error("student's name is required")
+      err.status = 400
+      err.name = 'Client error'
+      throw err
+    }
+    console.log('post接file', file)
     localFileHandler(file)
       .then((filePath) => {
+        console.log('post接filePath', filePath)
         return Student.create({
           name,
           introduction,
@@ -68,15 +69,18 @@ const studentServices = {
   putStudent: (req, cb) => {
     const { name, introduction } = req.body
     const file = req.file
-    const id = parseInt(req.params.id)
-    console.log('接file', file)
-    if (id !== req.user.studentId) {
-      const err = new Error('permission denied')
-      err.status = 401
-      err.name = 'Client error'
-      throw err
-    }
-    return Promise.all([Student.findByPk(id), localFileHandler(file)])
+    // const id = parseInt(req.params.id)
+    console.log('put接file', file)
+    // if (id !== req.user.studentId) {
+    //   const err = new Error('permission denied')
+    //   err.status = 401
+    //   err.name = 'Client error'
+    //   throw err
+    // }
+    return Promise.all([
+      Student.findByPk(req.user.studentId),
+      localFileHandler(file)
+    ])
       .then(([student, filePath]) => {
         if (!student) {
           const err = new Error("The student doesn't exit")
@@ -84,7 +88,7 @@ const studentServices = {
           err.name = 'Client error'
           throw err
         }
-        console.log('接filePath', filePath)
+        console.log('put接filePath', filePath)
         return student.update({
           name,
           introduction,

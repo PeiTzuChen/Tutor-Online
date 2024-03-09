@@ -1,6 +1,6 @@
 const multer = require('multer')
-// const path = require('path')
-
+const path = require('path')
+console.log(path.join(__dirname, '../temp/'))
 const upload = multer({
   // dest: path.join(__dirname, '../temp/'),
   dest: 'temp/',

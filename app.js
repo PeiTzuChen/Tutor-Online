@@ -11,9 +11,6 @@ const { createClient } = require('redis')
 
 // cross-origin
 app.use((req, res, next) => {
-  // res.setHeader(
-  //   'Access-Control-Allow-Origin', 'https://tutoring-platform-becky.vercel.app'
-  // )
   res.setHeader(
     'Access-Control-Allow-Origin',
     '*'
@@ -25,17 +22,17 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, Accept, Accept-Encoding'
   )
-
-  // 晚上測試寫在前面，setHearder會不會讀到
-  // if (req.method === 'OPTIONS') {
-  //   return res.status(200).end()
-  // }
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  } // 需寫在res.setHeader底部，第一次options request也要讀setHeader值
   next()
 })
-app.use('/upload', express.static('upload'))
-app.options('*', (req, res, next) => res.status(200).end())
+const path = require('path')
+
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 const { engine } = require('express-handlebars')
+
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
 app.set('views', './views')
