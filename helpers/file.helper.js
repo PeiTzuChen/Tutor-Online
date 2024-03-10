@@ -8,25 +8,16 @@ const localFileHandler = (file) => {
     if (!file) return resolve(null)
 
     // 要寫入的圖片路徑
-
-    // const fileName = path.join(__dirname, `../upload/${file.originalname}`)
     const fileName = `upload/${file.originalname}`
     return fspromises
       .readFile(file.path)
       .then((data) => {
-        console.log('data', data)
         fspromises.writeFile(fileName, data).then(data => console.log('writeFile done')).catch(err => console.log('writeFile error', err))
-        // fs.writeFileSync(fileName, data)
-        console.log('file helper寫入處理完')
-        // const path1 = path.join(__dirname, `../${fileName}`)
-        // const data2 = fs.readFileSync(path1)
-        // console.log('filehelperdata2:', data2)
-        // const data1 = fs.readFileSync(fileName)
-        // console.log('filehelperdata1:', data1)
       })
       .then(() => resolve(`/${fileName}`))
       .catch((err) => {
-        console.log('file helper export error')
+        err.message = 'file helper error'
+        err.status = 500
         return reject(err)
       })
   })

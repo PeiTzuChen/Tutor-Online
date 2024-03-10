@@ -64,7 +64,6 @@ const studentServices = {
     const { name, introduction } = req.body
     const file = req.file
     const studentId = req.user.studentId
-    console.log('put接file', file)
     if (!studentId) {
       const err = new Error('permission denied')
       err.status = 401
@@ -77,8 +76,6 @@ const studentServices = {
           err.status = 400
           throw err
         }
-        console.log('put接filePath', filePath)
-
         return student.update({
           name,
           introduction,
@@ -86,11 +83,9 @@ const studentServices = {
         })
       })
       .then((student) => {
-        console.log('student', student.toJSON())
         return cb(null, student)
       })
       .catch((err) => {
-        console.log('進入錯誤', err)
         return cb(err)
       })
   }
