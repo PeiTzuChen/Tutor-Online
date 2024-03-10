@@ -56,18 +56,37 @@ const userController = {
     }
   },
   GoogleSignIn: (req, cb) => {
-    const CLIENT_ID = '303422650660-1vqckog59tsnnvf423324ni7uepcpu4f.apps.googleusercontent.com'
-    const client = new OAuth2Client(CLIENT_ID)
+    // const CLIENT_ID = '303422650660-1vqckog59tsnnvf423324ni7uepcpu4f.apps.googleusercontent.com'
+    // const client = new OAuth2Client(CLIENT_ID)
+    const client = new OAuth2Client()
     const token = req.body.token
 
-    console.log(token)
+    console.log('token', token)
+
+    client.setCredentials({ access_token: token })
+
+    const userInfo = client
+      .request({
+        url: 'https://www.googleapis.com/oauth2/v3/userinfo'
+      })
+      .then((response) => {
+        console.log('response', response)
+        return response.data
+      }
+      )
+      .catch(() => null)
+
+    client.revokeCredentials()
+
+    console.log('userInfo', userInfo)
+
     // 將token和client_Id放入參數一起去做驗證
-    client.verifyIdToken({
-      idToken: token,
-      audience: CLIENT_ID
-    }).then(ticket => {
-      console.log(ticket)
-      // 判斷若ticket不存在情形  會發生？
+    // client.verifyIdToken({
+    //   idToken: token,
+    //   audience: CLIENT_ID
+    // }).then(ticket => {
+    //   console.log(ticket)
+    // 判斷若ticket不存在情形  會發生？
     // 將ticket email資料存入後台，若後台已有資料，直接寫入
     //   delete user.password
     //   const token = jwt.sign(
@@ -79,7 +98,7 @@ const userController = {
     //     { expiresIn: '30d' }
     //   )
     //   return cb(null, token)
-    }).catch(err => cb(err))
+    // }).catch(err => cb(err))
   },
   getUsers: (req, cb) => {
     User.findAll({
