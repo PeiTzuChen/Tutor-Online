@@ -82,12 +82,13 @@ const studentServices = {
           throw err
         }
         console.log('put接filePath', filePath)
-
         const dataPath = path.join(__dirname, `../${filePath}`)
-        fspromises.readFile(dataPath).then((data) => {
-          console.log('讀uploadData:', data)
-        })
-
+        console.log(path.join(__dirname, `../${filePath}`))
+        // fspromises.readFile(dataPath).then((data) => {
+        //   console.log('讀uploadData:', data)
+        // })
+        const data = fs.readFileSync(dataPath)
+        console.log('讀uploadData:', data)
         return student.update({
           name,
           introduction,

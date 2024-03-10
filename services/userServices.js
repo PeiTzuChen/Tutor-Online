@@ -67,7 +67,11 @@ const userController = {
       url: 'https://www.googleapis.com/oauth2/v3/userinfo'
     })
       .then((response) => {
-        console.log('response', response)
+        if (!response) {
+          const err = new Error('Google authenticate failed')
+          err.status = 400
+          throw cb(err)
+        }
         const email = response.data.email
         User.findOne({
           where: { email }
@@ -85,6 +89,7 @@ const userController = {
             })
         }).then(user => {
           client.revokeCredentials()
+          req.user = user
           const token = jwt.sign(
             {
               id: user.id,
