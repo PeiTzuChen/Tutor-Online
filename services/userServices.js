@@ -59,7 +59,7 @@ const userController = {
     const CLIENT_ID = '303422650660-1vqckog59tsnnvf423324ni7uepcpu4f.apps.googleusercontent.com'
     const client = new OAuth2Client(CLIENT_ID)
     const token = req.body.token
-
+    console.log('進入api')
     // 將token和client_Id放入參數一起去做驗證
     client.verifyIdToken({
       idToken: token,
