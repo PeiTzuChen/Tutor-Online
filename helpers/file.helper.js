@@ -37,12 +37,12 @@ const deleteFiles = function (directoryPath) {
         if (err) {
           console.error('Error deleting file:', err)
         } else {
-          console.log('File deleted successfully:', file)
+          console.log(`File: ${file} deleted successfully:`, file)
         }
       })
     })
   })
 }
 setInterval(() => deleteFiles(tempPath), 3600000) // 每一小時刪除暫存temp資料
-setInterval(() => deleteFiles(uploadPath), 604800000)
+setInterval(() => deleteFiles(uploadPath), 604800000) // 開發階段每一週刪除一次照片
 module.exports = { localFileHandler }

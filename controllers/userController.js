@@ -10,8 +10,19 @@ const userController = {
         })
     })
   },
-  signin: (req, res, next) => {
-    userServices.signin(req, (err, token) => {
+  signIn: (req, res, next) => {
+    userServices.signIn(req, (err, token) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          user: req.user,
+          token
+        })
+    })
+  },
+  GoogleSignIn: (req, res, next) => {
+    userServices.GoogleSignIn(req, (err, token) => {
       err
         ? next(err)
         : res.status(200).json({

@@ -38,7 +38,7 @@ const teacherServices = {
   //       if (teachersTotal.length < 1) {
   //         const err = new Error('No teachers data')
   //         err.status = 400
-  //         err.name = 'Client error'
+  //         err.name = 'error'
   //         throw err
   //       }
   //       // 刪除重複的老師資料
@@ -74,9 +74,7 @@ const teacherServices = {
     })
       .then((teachers) => {
         if (teachers.length < 1) {
-          const err = new Error('No teachers data')
-          err.status = 400
-          throw err
+          return cb(null, 'doesn\'t have teachers data yet')
         }
         const result = teachers.map((teacher) => ({
           id: teacher.id,
@@ -104,18 +102,16 @@ const teacherServices = {
       ]
     })
       .then((teacher) => {
+        if (!teacher) {
+          const err = new Error("The teacher doesn't exit")
+          err.status = 400
+          throw err
+        }
         const commentCount = teacher.dataValues.Comments.length
         let commentAvg = 0
         teacher.dataValues.Comments.forEach(element => {
           commentAvg += element.toJSON().score
         })
-
-        if (!teacher) {
-          const err = new Error("The teacher doesn't exit")
-          err.status = 400
-          err.name = 'Client error'
-          throw err
-        }
         const teacherData = teacher.dataValues
         const result = {
           id: teacherData.id,
@@ -127,7 +123,7 @@ const teacherServices = {
           categoryId: teacherData.categoriesInTeacher.map(
             (category) => category.id
           ),
-          ScoreAvg: commentCount ? commentAvg / commentCount : null
+          ScoreAvg: commentCount ? (commentAvg / commentCount).toFixed(1) : null
         }
         return cb(null, result)
       })
@@ -138,13 +134,11 @@ const teacherServices = {
     if (req.user.teacherId) {
       const err = new Error('This account has been teacher already')
       err.status = 409
-      err.name = 'Client error'
       throw err
     }
     if (!name) {
       const err = new Error("Teacher's name is required")
       err.status = 400
-      err.name = 'Client error'
       throw err
     }
     const file = req.file
@@ -176,25 +170,23 @@ const teacherServices = {
       .catch((err) => cb(err))
   },
   putTeacher: (req, cb) => {
-    const id = parseInt(req.params.id)
-    if (id !== req.user.teacherId) {
+    const teacherId = parseInt(req.user.teacherId)
+    if (!teacherId) {
       const err = new Error('permission denied')
       err.status = 401
-      err.name = 'Client error'
       throw err
     }
     const { name, country, introduction, style } = req.body
     const file = req.file
     return Promise.all([
-      Teacher.findByPk(id),
+      Teacher.findByPk(teacherId),
       localFileHandler(file),
-      CategoryTeacher.destroy({ where: { teacherId: id } })
+      CategoryTeacher.destroy({ where: { teacherId } })
     ])
       .then(([teacher, filePath]) => {
         if (!teacher) {
           const err = new Error("The teacher doesn't exit")
           err.status = 400
-          err.name = 'Client error'
           throw err
         }
         const categories = JSON.parse(req.body.categoryArray).map(

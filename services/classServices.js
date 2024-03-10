@@ -37,9 +37,7 @@ const classServices = {
     })
       .then((classes) => {
         if (classes.length < 1) {
-          const err = new Error('no classes data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have classes data yet")
         }
         const result = classes.map((aClass) => ({
           ...aClass.toJSON()
@@ -61,9 +59,7 @@ const classServices = {
     })
       .then((classes) => {
         if (classes.length < 1) {
-          const err = new Error('no classes data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have classes data yet")
         }
         const oneWeekClass = classes.filter((aClass) => {
           // 確認是否近一週內
@@ -87,9 +83,7 @@ const classServices = {
     })
       .then((classes) => {
         if (classes.length < 1) {
-          const err = new Error('no classes data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have classes data yet")
         }
         const oneWeekClass = classes.filter((aClass) => {
           // 確認是否近一週內
@@ -108,7 +102,7 @@ const classServices = {
     Class.findByPk(classId)
       .then((aClass) => {
         if (!aClass) {
-          const err = new Error('no class data')
+          const err = new Error('the class doesn\'t exist')
           err.status = 404
           throw err
         }
@@ -138,7 +132,7 @@ const classServices = {
     Class.findOne({ where: { teacherId, dateTimeRange } })
       .then((aClass) => {
         if (!aClass) {
-          const err = new Error('no class data')
+          const err = new Error('the class doesn\'t exist')
           err.status = 404
           throw err
         }

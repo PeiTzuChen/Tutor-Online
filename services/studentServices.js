@@ -9,9 +9,7 @@ const studentServices = {
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
       .then((students) => {
         if (students.length < 1) {
-          const err = new Error('no students data')
-          err.status = 404
-          throw err
+          return cb(null, 'doesn\'t have students data yet')
         }
         return cb(null, students)
       })
@@ -26,7 +24,6 @@ const studentServices = {
         if (!student) {
           const err = new Error("The student doesn't exit")
           err.status = 400
-          err.name = 'Client error'
           throw err
         }
 
@@ -42,13 +39,11 @@ const studentServices = {
     if (req.user.studentId) {
       const err = new Error('This account has been student already')
       err.status = 409
-      err.name = 'Client error'
       throw err
     }
     if (!name) {
       const err = new Error("student's name is required")
       err.status = 400
-      err.name = 'Client error'
       throw err
     }
     console.log('post接file', file)
@@ -72,23 +67,18 @@ const studentServices = {
   putStudent: (req, cb) => {
     const { name, introduction } = req.body
     const file = req.file
-    // const id = parseInt(req.params.id)
+    const studentId = req.user.studentId
     console.log('put接file', file)
-    // if (id !== req.user.studentId) {
-    //   const err = new Error('permission denied')
-    //   err.status = 401
-    //   err.name = 'Client error'
-    //   throw err
-    // }
-    return Promise.all([
-      Student.findByPk(req.user.studentId),
-      localFileHandler(file)
-    ])
+    if (!studentId) {
+      const err = new Error('permission denied')
+      err.status = 401
+      throw err
+    }
+    return Promise.all([Student.findByPk(studentId), localFileHandler(file)])
       .then(([student, filePath]) => {
         if (!student) {
           const err = new Error("The student doesn't exit")
           err.status = 400
-          err.name = 'Client error'
           throw err
         }
         console.log('put接filePath', filePath)

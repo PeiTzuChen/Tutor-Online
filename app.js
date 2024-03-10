@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   )
   if (req.method === 'OPTIONS') {
     return res.status(200).end()
-  } // 需寫在res.setHeader底部，第一次options request也要讀setHeader值
+  } // 需寫在res.setHeader底部，第一次options request也會讀setHeader值
   next()
 })
 const path = require('path')

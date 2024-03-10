@@ -11,9 +11,7 @@ const commentServices = {
     })
       .then((comments) => {
         if (comments.length < 1) {
-          const err = new Error('no comments data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have comments data yet")
         }
         return cb(null, comments)
       })
