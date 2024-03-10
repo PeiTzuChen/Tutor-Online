@@ -83,7 +83,7 @@ const studentServices = {
         }
         console.log('put接filePath', filePath)
         const dataPath = path.join(__dirname, `../${filePath}`)
-        console.log(path.join(__dirname, `../${filePath}`))
+        console.log('測試path', path.join(__dirname, `../${filePath}`))
         // fspromises.readFile(dataPath).then((data) => {
         //   console.log('讀uploadData:', data)
         // })

@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const fspromises = fs.promises
+
 const localFileHandler = (file) => {
   // 將temp資料透過fs緩衝方法，複製一份到upload資料夾，避免multer資料不完整
   return new Promise((resolve, reject) => {
@@ -13,14 +14,20 @@ const localFileHandler = (file) => {
     return fspromises
       .readFile(file.path)
       .then((data) => {
+        console.log('data', data)
         fspromises.writeFile(fileName, data)
+        console.log('file helper寫入處理完')
+        const path1 = path.join(__dirname, `../${fileName}`)
+        const data2 = fs.readFileSync(path1)
+        console.log('filehelperdata2:', data2)
         const data1 = fs.readFileSync(fileName)
         console.log('filehelperdata1:', data1)
-        const data2 = path.join(__dirname, `../${fileName}`)
-        console.log('filehelperdata2:', data2)
       })
       .then(() => resolve(`/${fileName}`))
-      .catch((err) => reject(err))
+      .catch((err) => {
+        console.log('file helper export error')
+        return reject(err)
+      })
   })
 }
 
