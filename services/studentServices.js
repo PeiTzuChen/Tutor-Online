@@ -3,7 +3,7 @@ const { Student, User, sequelize } = db
 const { localFileHandler } = require('../helpers/file.helper')
 const path = require('path')
 const fs = require('fs')
-const fspromises = fs.promises
+// const fspromises = fs.promises
 const studentServices = {
   getStudents: (req, cb) => {
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })

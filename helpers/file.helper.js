@@ -14,6 +14,10 @@ const localFileHandler = (file) => {
       .readFile(file.path)
       .then((data) => {
         fspromises.writeFile(fileName, data)
+        const data1 = fs.readFileSync(fileName)
+        console.log('filehelperdata1:', data1)
+        const data2 = path.join(__dirname, `../${fileName}`)
+        console.log('filehelperdata2:', data2)
       })
       .then(() => resolve(`/${fileName}`))
       .catch((err) => reject(err))
