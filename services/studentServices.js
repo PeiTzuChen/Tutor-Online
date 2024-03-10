@@ -1,9 +1,7 @@
 const db = require('../models')
 const { Student, User, sequelize } = db
 const { localFileHandler } = require('../helpers/file.helper')
-const path = require('path')
-const fs = require('fs')
-// const fspromises = fs.promises
+
 const studentServices = {
   getStudents: (req, cb) => {
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
@@ -46,10 +44,8 @@ const studentServices = {
       err.status = 400
       throw err
     }
-    console.log('post接file', file)
     localFileHandler(file)
       .then((filePath) => {
-        console.log('post接filePath', filePath)
         return Student.create({
           name,
           introduction,
@@ -82,13 +78,7 @@ const studentServices = {
           throw err
         }
         console.log('put接filePath', filePath)
-        const dataPath = path.join(__dirname, `../${filePath}`)
-        console.log('測試path', path.join(__dirname, `../${filePath}`))
-        // fspromises.readFile(dataPath).then((data) => {
-        //   console.log('讀uploadData:', data)
-        // })
-        const data = fs.readFileSync(dataPath)
-        console.log('讀uploadData:', data)
+
         return student.update({
           name,
           introduction,
