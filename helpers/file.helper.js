@@ -15,7 +15,8 @@ const localFileHandler = (file) => {
       .readFile(file.path)
       .then((data) => {
         console.log('data', data)
-        fspromises.writeFile(fileName, data)
+        // fspromises.writeFile(fileName, data)
+        fs.writeFileSync(fileName, data)
         console.log('file helper寫入處理完')
         const path1 = path.join(__dirname, `../${fileName}`)
         const data2 = fs.readFileSync(path1)

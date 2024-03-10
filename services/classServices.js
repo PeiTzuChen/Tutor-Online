@@ -13,9 +13,7 @@ const classServices = {
     Class.findAll({ raw: true, where: { teacherId } })
       .then((classes) => {
         if (classes.length < 1) {
-          const err = new Error('no classes data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have classes data yet")
         }
         const twoWeekClass = classes.filter((aClass) => {
           // 確認是否近兩週內

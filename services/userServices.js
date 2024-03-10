@@ -116,9 +116,7 @@ const userController = {
     })
       .then((users) => {
         if (users.length < 1) {
-          const err = new Error('no users data')
-          err.status = 404
-          throw err
+          return cb(null, "doesn't have users data yet")
         }
         return cb(null, users)
       })
