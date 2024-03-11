@@ -8,7 +8,7 @@ const passport = require('./config/passport')
 const server = http.Server(app)
 const { Server } = require('socket.io')
 const { createClient } = require('redis')
-
+const path = require('path')
 // cross-origin
 app.use((req, res, next) => {
   res.setHeader(
@@ -27,7 +27,6 @@ app.use((req, res, next) => {
   } // 需寫在res.setHeader底部，第一次options request也會讀setHeader值
   next()
 })
-const path = require('path')
 
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
