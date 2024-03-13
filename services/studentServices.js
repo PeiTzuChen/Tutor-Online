@@ -39,11 +39,11 @@ const studentServices = {
       err.status = 409
       throw err
     }
-    if (!name) {
-      const err = new Error("student's name is required")
-      err.status = 400
-      throw err
-    }
+    // if (!name) {
+    //   const err = new Error("student's name is required")
+    //   err.status = 400
+    //   throw err
+    // }
     localFileHandler(file)
       .then((filePath) => {
         return Student.create({
