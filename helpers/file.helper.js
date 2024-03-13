@@ -8,15 +8,12 @@ const localFileHandler = (file) => {
     if (!file) return resolve(null)
 
     // 要寫入的圖片路徑
-    // const fileName = `upload/${file.originalname}`
-    const fileName = path.join(__dirname, `../upload/${file.originalname}`)
-
+    const fileName = `upload/${file.originalname}`
     return fspromises
       .readFile(file.path)
       .then((data) => {
         console.log('接到data', data)
-        console.log('fileName Path', fileName)
-        fspromises.writeFile(fileName, data).then(data => console.log('writeFile done')).catch(err => console.log('writeFile error', err))
+        fspromises.writeFile(fileName, data).then(data => console.log('writeFile 寫成功')).catch(err => console.log('writeFile 出錯', err))
       })
       .then(() => resolve(`/${fileName}`))
       .catch((err) => {
