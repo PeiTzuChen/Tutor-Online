@@ -7,13 +7,15 @@ const localFileHandler = (file) => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
 
-    // 要寫入的圖片路徑
+    // 要寫入的圖片名稱
     const fileName = `upload/${file.originalname}`
+    // 要寫入的圖片路徑
+    const filePath = path.join(__dirname, `../upload/${file.originalname}`)
     return fspromises
       .readFile(file.path)
       .then((data) => {
-        console.log('接到data', data)
-        fspromises.writeFile(fileName, data).then(data => console.log('writeFile 寫成功')).catch(err => console.log('writeFile 出錯', err))
+        console.log('fileHelper接到data', data)
+        fspromises.writeFile(filePath, data).then(data => console.log('writeFile 寫成功')).catch(err => console.log('writeFile 出錯', err))
       })
       .then(() => resolve(`/${fileName}`))
       .catch((err) => {
