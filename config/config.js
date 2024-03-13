@@ -29,5 +29,5 @@ module.exports = {
   //   host: process.env.MYSQL_ROOT_HOST,
   //   port: process.env.MYSQL_PORT,
   //   dialect: 'mysql'
-  }
+  // }
 }

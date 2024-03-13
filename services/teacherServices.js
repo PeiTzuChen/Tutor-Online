@@ -1,7 +1,7 @@
 const db = require('../models')
 const { Teacher, Category, User, CategoryTeacher, Comment } = db
 const { localFileHandler } = require('../helpers/file.helper')
-const { Console } = require('console')
+
 const teacherServices = {
   // getTeachers: (req, cb) => {
   //   const { page } = req.query
