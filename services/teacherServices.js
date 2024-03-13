@@ -1,6 +1,7 @@
 const db = require('../models')
 const { Teacher, Category, User, CategoryTeacher, Comment } = db
 const { localFileHandler } = require('../helpers/file.helper')
+const { Console } = require('console')
 const teacherServices = {
   // getTeachers: (req, cb) => {
   //   const { page } = req.query
@@ -143,7 +144,7 @@ const teacherServices = {
     }
     const file = req.file
     const userId = req.user.id
-
+    console.log('接到file', file)
     localFileHandler(file)
       .then((filePath) => {
         return Teacher.create({

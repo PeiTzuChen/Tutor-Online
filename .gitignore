@@ -37,4 +37,6 @@ npm-debug.log
 
 temp/*
 
+docker-compose.yaml
+Dockerfile
 
