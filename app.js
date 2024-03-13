@@ -9,6 +9,7 @@ const server = http.Server(app)
 const { Server } = require('socket.io')
 const { createClient } = require('redis')
 const path = require('path')
+
 // cross-origin
 app.use((req, res, next) => {
   res.setHeader(
@@ -37,7 +38,8 @@ app.set('view engine', '.hbs')
 app.set('views', './views')
 
 const redis = async (id, data) => {
-  const client = createClient({ url: 'redis://127.0.0.1:6379' })
+  const client = createClient({ url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` })
+
   client.on('ready', () => {
     console.log('Redis is ready')
   })

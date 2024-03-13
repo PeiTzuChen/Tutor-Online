@@ -1,0 +1,42 @@
+version: '2.24.6'
+services:
+
+  mySQL:
+    image: mysql:8.2.0-oraclelinux8
+    ports:
+      - 8080:3306
+    environment:
+       MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_DATABASE: tutor_online
+    volumes:
+      - MySQL-data:/var/lib/mysql/data
+    healthcheck: # 測試MySQL是否完成
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 9000:6379 
+    volumes:
+      - Redis-data:/data
+
+  webapp:
+    image: node-app:16.0   # node-app:16.0 redis MySQL 都成功
+    ports:
+      - 3000:3000
+    environment:
+        REDIS_PORT: 6379
+        REDIS_IP: redis
+        MYSQL_USER: root
+        MYSQL_ROOT_HOST: mySQL
+        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_DATABASE: tutor_online
+        MYSQL_PORT: 3306
+    depends_on:
+      mySQL:
+        condition: service_healthy   #等待SQL創建結束才執行node service
+    command: node app.js
+
+
