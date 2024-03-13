@@ -30,4 +30,13 @@ const routeErrorHandler = (error, req, res, next) => {
   next(error)
 }
 
-module.exports = routeErrorHandler
+const clientErrorHandler = (error, req, res, next) => {
+  if (req.xhr) {
+    res.status(error.status || 400).json({
+      status: 'error',
+      message: `前端XHR請求有誤: ${error.message}`
+    })
+  }
+  next(error)
+}
+module.exports = { routeErrorHandler, clientErrorHandler }

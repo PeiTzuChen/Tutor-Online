@@ -9,7 +9,7 @@ const server = http.Server(app)
 const { Server } = require('socket.io')
 const { createClient } = require('redis')
 const path = require('path')
-
+const { clientErrorHandler } = require('./middlewares/errorHandler')
 // cross-origin
 app.use((req, res, next) => {
   res.setHeader(
@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
 app.use(express.json())
 app.use(passport.initialize())
 app.use(route)
-
+app.use(clientErrorHandler)
 server.listen(port, () =>
   console.log(`server listening on http://localhost:${port}`)
 )

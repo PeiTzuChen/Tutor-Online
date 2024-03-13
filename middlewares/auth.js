@@ -1,4 +1,5 @@
 const passport = require('../config/passport')
+
 const signInAuthenticate = (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user) => {
     if (err) {
