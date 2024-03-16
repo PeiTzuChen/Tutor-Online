@@ -33,17 +33,16 @@ const studentServices = {
     const { name, introduction } = req.body
     const file = req.file
     const userId = req.user.id
-
     if (req.user.studentId) {
       const err = new Error('This account has been student already')
       err.status = 409
       throw err
     }
-    // if (!name) {
-    //   const err = new Error("student's name is required")
-    //   err.status = 400
-    //   throw err
-    // }
+    if (!name) {
+      const err = new Error("student's name is required")
+      err.status = 400
+      throw err
+    }
     localFileHandler(file)
       .then((filePath) => {
         return Student.create({

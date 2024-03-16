@@ -255,6 +255,19 @@ const classServices = {
       .then((deletedClass) => cb(null, deletedClass))
       .catch((err) => cb(err))
   }
+  // onClass: (req, cb) => {
+  //   const io = new Server(server)
+  //   const list = {}
+  //   io.on('connection', (socket) => {
+  //     const userId = socket.id
+  //     list[userId] = 'test' // F_PV4fqZgWv03jUgAAAC: 'test'  eachId has own avatar
+  //     socket.on('message', (id, data) => {
+  //       redis(id, data)
+  //       console.log(data)
+  //       io.emit('message', list[id], data)
+  //     })
+  //   })
+  // }
 }
 
 module.exports = classServices

@@ -90,7 +90,17 @@ const classController = {
           data
         })
     })
-  }
+  },
+  // onClass: (req, res, next) => {
+  //   classServices.deleteClass(req, (err, data) => {
+  //     err
+  //       ? next(err)
+  //       : res.status(200).json({
+  //         status: 'success',
+  //         data
+  //       })
+  //   })
+  // }
 }
 
 module.exports = classController

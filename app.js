@@ -37,8 +37,14 @@ app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
 app.set('views', './views')
 
+app.use(express.json())
+app.use(passport.initialize())
+app.use(route)
+
 const redis = async (id, data) => {
-  const client = createClient({ url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` })
+  const client = createClient({
+    url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}`
+  })
 
   client.on('ready', () => {
     console.log('Redis is ready')
@@ -50,25 +56,36 @@ const redis = async (id, data) => {
   const list = {}
   list[id] = data
 
-  await client.lPush('dialog', JSON.stringify(list))
+  await client.lPush('chat:1', JSON.stringify(list))
 
   await client.quit()
 }
 
-const io = new Server(server)
-const list = {}
+const io = new Server(server, {
+  cors: {
+    origin: 'https://tutoring-platform-becky.vercel.app/',
+    method: ['GET', 'POST']
+  }
+})
+app.use('/test', (req, res) => {
+  console.log('連到本地')
+  res.send('hi')
+})
+
 io.on('connection', (socket) => {
-  const userId = socket.id
-  list[userId] = 'test' // F_PV4fqZgWv03jUgAAAC: 'test'  eachId has own avatar
+  console.log('開啟聊天')
+  // const userId = socket.id
   socket.on('message', (id, data) => {
+    console.log(data)
     redis(id, data)
-    socket.broadcast.emit('message', list[id], data)
+    socket.broadcast.emit('message', id, data)
+  })
+
+  socket.on('disconnect', () => {
+    console.log('離開聊天')
   })
 })
 
-app.use(express.json())
-app.use(passport.initialize())
-app.use(route)
 app.use(clientErrorHandler)
 server.listen(port, () =>
   console.log(`server listening on http://localhost:${port}`)
