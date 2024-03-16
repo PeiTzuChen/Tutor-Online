@@ -67,7 +67,12 @@ const io = new Server(server, {
   //   method: ["GET", "POST"],
   //   allowedHeaders:{}
   // },
-});
+  cors: {
+    origin: 'https://tutoring-platform-becky.vercel.app/',
+    methods: ['GET', 'POST']
+    // allowedHeaders:{}
+  }
+})
 app.use('/test', (req, res) => {
   console.log('連到本地')
   res.send('hi')
