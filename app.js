@@ -63,7 +63,7 @@ const redis = async (id, data) => {
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://tutoring-platform-becky.vercel.app/',
+    origin: 'https://tutoring-platform-becky.vercel.app',
     method: ['GET', 'POST']
   }
 })
