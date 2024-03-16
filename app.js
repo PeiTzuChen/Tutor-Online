@@ -68,7 +68,7 @@ const io = new Server(server, {
   //   allowedHeaders:{}
   // },
   cors: {
-    origin: 'https://tutoring-platform-becky.vercel.app/',
+    origin: 'https://tutoring-platform-becky.vercel.app',
     methods: ['GET', 'POST']
     // allowedHeaders:{}
   }
