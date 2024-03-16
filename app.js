@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
   // const userId = socket.id
   socket.on('message', (id, data) => {
     console.log(data)
-    redis(id, data)
+    // redis(id, data)
     socket.broadcast.emit('message', id, data)
   })
 
