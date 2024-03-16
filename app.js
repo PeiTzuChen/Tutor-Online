@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     'GET, POST, PUT, DELETE, PATCH')
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Accept, Accept-Encoding'
+    'Content-Type, Authorization, Accept, Accept-Encoding,ngrok-skip-browser-warning'
   )
   if (req.method === 'OPTIONS') {
     return res.status(200).end()
@@ -62,11 +62,12 @@ const redis = async (id, data) => {
 }
 
 const io = new Server(server, {
-  cors: {
-    origin: 'https://tutoring-platform-becky.vercel.app',
-    method: ['GET', 'POST']
-  }
-})
+  // cors: {
+  //   origin: "https://internal-toad-properly.ngrok-free.app",
+  //   method: ["GET", "POST"],
+  //   allowedHeaders:{}
+  // },
+});
 app.use('/test', (req, res) => {
   console.log('連到本地')
   res.send('hi')
