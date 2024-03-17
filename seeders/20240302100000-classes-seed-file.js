@@ -32,7 +32,7 @@ module.exports = {
       'Classes',
       Array.from({ length: 30 }, (_, i) => ({
         name: faker.person.fullName(),
-        link: faker.internet.url({ protocol: 'http', appendSlash: false }),
+        link: `https://tutoring-platform-becky.vercel.app/class/chat/room${i}`,
         date_time_range: dateTimeRange[i],
         length: classLength(dateTimeRange[i]),
         teacher_id:

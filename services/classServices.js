@@ -6,6 +6,8 @@ const {
   withinWeek,
   classOrder
 } = require('../helpers/date.helper')
+const uuidv4 = require('uuid').v4
+const baseURL = 'https://tutoring-platform-becky.vercel.app/classes/chat/'
 
 const classServices = {
   getCreatedClasses: (req, cb) => {
@@ -145,8 +147,8 @@ const classServices = {
       .catch((err) => cb(err))
   },
   postClass: (req, cb) => {
-    const { name, dateTimeRange, link } = req.body
-    const teacherId = req.user.teacherId
+    const { name, dateTimeRange } = req.body
+    const { studentId, teacherId } = req.user
     const categoryId = parseInt(req.body.category)
 
     if (!teacherId) {
@@ -155,45 +157,97 @@ const classServices = {
       err.status = 401
       throw err
     }
-    if (!(dateTimeRange && name && link)) {
-      // 三個都要存在才能新增課程
-      const err = new Error('Date, name and link of class are required')
+    if (!(dateTimeRange && name)) {
+      // 兩個都要存在才能新增課程
+      const err = new Error('Date and name are required')
       err.status = 400
       throw err
     }
 
-    Class.findAll({ raw: true, where: { teacherId } })
-      .then((classes) => {
-        if (classes.length > 0) {
-          const existDate = classes.map((aClass) => aClass.dateTimeRange)
-          // 與資料庫存在課程逐一比對，有重疊回傳true
-          const overlapping = existDate.map((existDate) =>
-            isOverlapping(existDate, dateTimeRange)
-          )
-          if (overlapping.includes(true)) {
-            const err = new Error('This class conflicts with other class')
+    // 確認老師開課時間是否與自己是學生身份的預定課程有衝突
+    if (studentId) {
+      Class.findAll({ raw: true, where: { studentId } })
+        .then((classes) => {
+          if (
+            classes.some((aClass) => aClass.dateTimeRange === dateTimeRange)
+          ) {
+            const err = new Error(
+              'This class conflicts with other class you booked as student'
+            )
             err.status = 400
             throw err
           }
-        }
-        const length = classLength(dateTimeRange)
+          // 若沒有衝突，則確認此時段是否已開課
+          Class.findAll({ raw: true, where: { teacherId } })
+            .then((classes) => {
+              if (classes.length > 0) {
+                const existDate = classes.map((aClass) => aClass.dateTimeRange)
+                // 與資料庫存在課程逐一比對，有重疊回傳true
+                const overlapping = existDate.map((existDate) =>
+                  isOverlapping(existDate, dateTimeRange)
+                )
+                if (overlapping.includes(true)) {
+                  const err = new Error(
+                    'This class conflicts with other class you create as teacher'
+                  )
+                  err.status = 400
+                  throw err
+                }
+              }
+              const length = classLength(dateTimeRange)
 
-        return Class.create({
-          name,
-          dateTimeRange,
-          link,
-          length,
-          categoryId,
-          teacherId
+              return Class.create({
+                name,
+                dateTimeRange,
+                link: baseURL + uuidv4().slice(0, 8),
+                length,
+                categoryId,
+                teacherId
+              })
+            })
+            .then((aClass) => {
+              cb(null, aClass.toJSON())
+            })
+            .catch((err) => cb(err))
         })
-      })
-      .then((aClass) => {
-        cb(null, aClass.toJSON())
-      })
-      .catch((err) => cb(err))
+        .catch((err) => cb(err))
+    } else {
+      // 若不是學生身份，則確認此時段是否已開課
+      Class.findAll({ raw: true, where: { teacherId } })
+        .then((classes) => {
+          if (classes.length > 0) {
+            const existDate = classes.map((aClass) => aClass.dateTimeRange)
+            // 與資料庫存在課程逐一比對，有重疊回傳true
+            const overlapping = existDate.map((existDate) =>
+              isOverlapping(existDate, dateTimeRange)
+            )
+            if (overlapping.includes(true)) {
+              const err = new Error(
+                'This class conflicts with other class you create as teacher'
+              )
+              err.status = 400
+              throw err
+            }
+          }
+          const length = classLength(dateTimeRange)
+
+          return Class.create({
+            name,
+            dateTimeRange,
+            link: baseURL + uuidv4().slice(0, 8),
+            length,
+            categoryId,
+            teacherId
+          })
+        })
+        .then((aClass) => {
+          cb(null, aClass.toJSON())
+        })
+        .catch((err) => cb(err))
+    }
   },
   putClass: (req, cb) => {
-    const { name, dateTimeRange, link } = req.body
+    const { name, dateTimeRange } = req.body
     const teacherId = req.user.teacherId
     const categoryId = parseInt(req.body.category)
     const classId = req.params.id
@@ -203,9 +257,9 @@ const classServices = {
       err.status = 401
       throw err
     }
-    if (!(dateTimeRange && name && link)) {
+    if (!(dateTimeRange && name)) {
       // 三個都要存在才能新增課程
-      const err = new Error('Date, name and link of class are required')
+      const err = new Error('Date and name are required')
       err.status = 400
       throw err
     }
@@ -221,7 +275,6 @@ const classServices = {
         return aClass.update({
           name,
           dateTimeRange,
-          link,
           length,
           categoryId
         })
@@ -255,19 +308,6 @@ const classServices = {
       .then((deletedClass) => cb(null, deletedClass))
       .catch((err) => cb(err))
   }
-  // onClass: (req, cb) => {
-  //   const io = new Server(server)
-  //   const list = {}
-  //   io.on('connection', (socket) => {
-  //     const userId = socket.id
-  //     list[userId] = 'test' // F_PV4fqZgWv03jUgAAAC: 'test'  eachId has own avatar
-  //     socket.on('message', (id, data) => {
-  //       redis(id, data)
-  //       console.log(data)
-  //       io.emit('message', list[id], data)
-  //     })
-  //   })
-  // }
 }
 
 module.exports = classServices

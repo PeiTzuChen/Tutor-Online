@@ -43,7 +43,7 @@ app.use(route)
 
 const redis = async (id, data) => {
   const client = createClient({
-    url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}`
+    url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
   })
 
   client.on('ready', () => {
@@ -62,29 +62,31 @@ const redis = async (id, data) => {
 }
 
 const io = new Server(server, {
-  // cors: {
-  //   origin: "https://internal-toad-properly.ngrok-free.app",
-  //   method: ["GET", "POST"],
-  //   allowedHeaders:{}
-  // },
   cors: {
+    // origin: 'https://internal-toad-properly.ngrok-free.app',
     origin: 'https://tutoring-platform-becky.vercel.app',
-    methods: ['GET', 'POST']
-    // allowedHeaders:{}
+    method: ['GET', 'POST'],
+    allowedHeaders: ['ngrok-skip-browser-warning']
   }
-})
-app.use('/test', (req, res) => {
-  console.log('連到本地')
-  res.send('hi')
 })
 
 io.on('connection', (socket) => {
   console.log('開啟聊天')
-  // const userId = socket.id
-  socket.on('message', (id, data) => {
-    console.log(data)
+
+  // 這個joinRoom（名字我自己取的）是當使用者進來頁面就自動觸發（不需靠任何點擊），需要傳入房間名字，
+  // 房間名字是 baseurl/class/chat/:roomName，這個我會產生課程link給你，重新feed資料庫
+  // 因為如果沒有77-79行，
+  // 使用86行會變成 當A發送訊息給Ｂ，但B還沒發送訊息所以沒加入房間，看不到A發的訊息
+  socket.on('joinRoom', (roomName) => {
+    socket.join(roomName)
+  })
+
+  socket.on('message', (roomName, email, data) => { // 這裡我要接收roomName、email跟data
+    console.log('email:', email)
+    console.log('data', data)
     // redis(id, data)
-    socket.broadcast.emit('message', id, data)
+    // socket.join(roomName);
+    socket.to(roomName).emit('message', { email: `${email}`, data: `${data}` })
   })
 
   socket.on('disconnect', () => {
