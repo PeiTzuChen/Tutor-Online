@@ -146,7 +146,7 @@ const classServices = {
       .then((aClass) => cb(null, aClass))
       .catch((err) => cb(err))
   },
-  postClass: (req, cb) => {
+  postClass: (req, res, cb) => {
     const { name, dateTimeRange } = req.body
     const { studentId, teacherId } = req.user
     const categoryId = parseInt(req.body.category)
@@ -164,87 +164,61 @@ const classServices = {
       throw err
     }
 
-    // 確認老師開課時間是否與自己是學生身份的預定課程有衝突
-    if (studentId) {
-      Class.findAll({ raw: true, where: { studentId } })
-        .then((classes) => {
-          if (
-            classes.some((aClass) => aClass.dateTimeRange === dateTimeRange)
-          ) {
-            const err = new Error(
-              'This class conflicts with other class you booked as student'
-            )
-            err.status = 400
-            throw err
-          }
-          // 若沒有衝突，則確認此時段是否已開課
-          Class.findAll({ raw: true, where: { teacherId } })
-            .then((classes) => {
-              if (classes.length > 0) {
-                const existDate = classes.map((aClass) => aClass.dateTimeRange)
-                // 與資料庫存在課程逐一比對，有重疊回傳true
-                const overlapping = existDate.map((existDate) =>
-                  isOverlapping(existDate, dateTimeRange)
-                )
-                if (overlapping.includes(true)) {
-                  const err = new Error(
-                    'This class conflicts with other class you create as teacher'
-                  )
-                  err.status = 400
-                  throw err
-                }
-              }
-              const length = classLength(dateTimeRange)
-
-              return Class.create({
-                name,
-                dateTimeRange,
-                link: baseURL + uuidv4().slice(0, 8),
-                length,
-                categoryId,
-                teacherId
+    // 使用async 確保先確認 if studentId
+    async function postClass () {
+      // 確認老師開課時間是否與自己是學生身份的預定課程有衝突
+      if (studentId) {
+        await Class.findAll({ raw: true, where: { studentId } })
+          .then((classes) => {
+            if (classes.length > 0) {
+              const overlap = classes.some(aClass => {
+                return isOverlapping(aClass.dateTimeRange, dateTimeRange)
               })
-            })
-            .then((aClass) => {
-              cb(null, aClass.toJSON())
-            })
-            .catch((err) => cb(err))
-        })
-        .catch((err) => cb(err))
-    } else {
-      // 若不是學生身份，則確認此時段是否已開課
-      Class.findAll({ raw: true, where: { teacherId } })
-        .then((classes) => {
-          if (classes.length > 0) {
-            const existDate = classes.map((aClass) => aClass.dateTimeRange)
-            // 與資料庫存在課程逐一比對，有重疊回傳true
-            const overlapping = existDate.map((existDate) =>
-              isOverlapping(existDate, dateTimeRange)
-            )
-            if (overlapping.includes(true)) {
-              const err = new Error(
-                'This class conflicts with other class you create as teacher'
-              )
-              err.status = 400
-              throw err
+              if (overlap) {
+                const err = new Error(
+                  'This class conflicts with other class you booked as student'
+                )
+                err.status = 400
+                throw err
+              }
             }
-          }
-          const length = classLength(dateTimeRange)
-
-          return Class.create({
-            name,
-            dateTimeRange,
-            link: baseURL + uuidv4().slice(0, 8),
-            length,
-            categoryId,
-            teacherId
           })
-        })
-        .then((aClass) => {
-          cb(null, aClass.toJSON())
-        })
-        .catch((err) => cb(err))
+          .catch((err) => cb(err))
+      }
+      // 若上述沒衝突，則確認身為老師是否自己已在此時段開課
+      if (res.statusCode !== 400) {
+        await Class.findAll({ raw: true, where: { teacherId } })
+          .then((classes) => {
+            if (classes.length > 0) {
+              const overlap = classes.some((aClass) => {
+                return isOverlapping(aClass.dateTimeRange, dateTimeRange)
+              })
+              if (overlap) {
+                const err = new Error(
+                  'This class conflicts with other class you create as teacher'
+                )
+                err.status = 400
+                throw err
+              }
+            }
+            const length = classLength(dateTimeRange)
+
+            return Class.create({
+              name,
+              dateTimeRange,
+              link: baseURL + uuidv4().slice(0, 8),
+              length,
+              categoryId,
+              teacherId
+            })
+          })
+          .then((aClass) => {
+            cb(null, aClass.toJSON())
+          })
+          .catch((err) => cb(err))
+      }
     }
+    postClass()
   },
   putClass: (req, cb) => {
     const { name, dateTimeRange } = req.body
