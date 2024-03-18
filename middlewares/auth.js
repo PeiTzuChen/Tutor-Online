@@ -8,7 +8,6 @@ const signInAuthenticate = (req, res, next) => {
     if (!user) {
       const err = new Error('email and password are required')
       err.status = 401
-      err.name = 'Client error'
       return next(err)
     }
     req.user = user

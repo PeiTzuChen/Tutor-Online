@@ -44,6 +44,7 @@ app.use(route)
 const redis = async (id, data) => {
   const client = createClient({
     url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
+    // url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` //for Zeabur
   })
 
   client.on('ready', () => {
@@ -77,10 +78,13 @@ io.on('connection', (socket) => {
   // 房間名字是 baseurl/class/chat/:roomName，這個我會產生課程link給你，重新feed資料庫
   // 因為如果沒有77-79行，
   // 使用86行會變成 當A發送訊息給Ｂ，但B還沒發送訊息所以沒加入房間，看不到A發的訊息
-  socket.on('joinRoom', (roomName) => {
+  socket.on('joinRoom', (roomName, userName) => {
+    console.log('join')
     socket.join(roomName)
+    socket.to(roomName).emit('ready', `${userName}準備通話`)
   })
 
+  // 按發送按鈕觸發這裡欸ㄈ
   socket.on('message', (roomName, email, data) => { // 這裡我要接收roomName、email跟data
     console.log('email:', email)
     console.log('data', data)
@@ -98,3 +102,5 @@ app.use(clientErrorHandler)
 server.listen(port, () =>
   console.log(`server listening on http://localhost:${port}`)
 )
+
+module.exports = app

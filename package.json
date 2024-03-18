@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "NODE_ENV=development nodemon app.js ",
-    "test": "mocha tests --exit --recursive --timeout 5000",
+    "test": "NODE_ENV=development mocha tests --exit --recursive --timeout 5000",
     "dbmigrate": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
@@ -39,7 +39,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "chai": "^5.1.0",
+    "chai": "^4.3.4",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",

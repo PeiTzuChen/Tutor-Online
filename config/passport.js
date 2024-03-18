@@ -12,7 +12,6 @@ passport.use( // username && password 有值才會執行
         if (!user) {
           const err = new Error('email or password is wrong')
           err.status = 401
-          err.name = 'Client error'
           throw err
         }
         bcrypt
@@ -21,7 +20,6 @@ passport.use( // username && password 有值才會執行
             if (!res) {
               const err = new Error('email or password is wrong')
               err.status = 401
-              err.name = 'Client error'
               throw err
             }
             return cb(null, user.toJSON())
