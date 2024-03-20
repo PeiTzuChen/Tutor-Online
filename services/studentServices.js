@@ -4,16 +4,19 @@ const { localFileHandler } = require('../helpers/file.helper')
 
 const studentServices = {
   getStudents: (req, cb) => {
-    console.log('進入此路由')
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
       .then((students) => {
-        console.log('進入內層')
+        console.log('進入')
         if (students.length < 1) {
           return cb(null, 'doesn\'t have students data yet')
         }
         return cb(null, students)
       })
-      .catch((err) => cb(err))
+      .catch((err) => {
+        console.log(err)
+        return cb(err)
+      }
+      )
   },
   getStudent: (req, cb) => {
     const id = req.params.id

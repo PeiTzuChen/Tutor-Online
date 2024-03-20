@@ -7,7 +7,7 @@ const {
   classOrder
 } = require('../helpers/date.helper')
 const uuidv4 = require('uuid').v4
-const baseURL = 'https://tutoring-platform-becky.vercel.app/classes/chat/'
+const baseURL = 'https://tutoring-platform-becky.vercel.app/classes/'
 
 const classServices = {
   getCreatedClasses: (req, cb) => {
