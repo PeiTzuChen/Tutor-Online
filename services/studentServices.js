@@ -4,8 +4,10 @@ const { localFileHandler } = require('../helpers/file.helper')
 
 const studentServices = {
   getStudents: (req, cb) => {
+    console.log('進入此路由')
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
       .then((students) => {
+        console.log('進入內層')
         if (students.length < 1) {
           return cb(null, 'doesn\'t have students data yet')
         }

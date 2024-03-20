@@ -41,7 +41,7 @@ app.use(express.json())
 app.use(passport.initialize())
 app.use(route)
 
-const redis = async (id, data) => {
+const redis = async (email, data) => {
   const client = createClient({
     url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
     // url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` //for Zeabur
@@ -55,17 +55,20 @@ const redis = async (id, data) => {
   })
   await client.connect()
   const list = {}
-  list[id] = data
+  list.email = email
+  list.data = data
 
   await client.lPush('chat:1', JSON.stringify(list))
-
+  const history = await client.lRange('chat:1', 0, -1)
+  console.log(history)
+  console.log('hi')
   await client.quit()
 }
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://internal-toad-properly.ngrok-free.app',
-    // origin: 'https://tutoring-platform-becky.vercel.app',
+    // origin: 'https://internal-toad-properly.ngrok-free.app',
+    origin: 'https://tutoring-platform-becky.vercel.app',
     method: ['GET', 'POST'],
     allowedHeaders: ['ngrok-skip-browser-warning']
   }
@@ -79,7 +82,7 @@ io.on('connection', (socket) => {
   // 因為如果沒有77-79行，
   // 使用86行會變成 當A發送訊息給Ｂ，但B還沒發送訊息所以沒加入房間，看不到A發的訊息
   socket.on('joinRoom', (roomName, userName) => {
-    console.log('join')
+    console.log('join', roomName)
     socket.join(roomName)
     socket.to(roomName).emit('ready', `${userName}準備通話`)
   })
@@ -88,8 +91,7 @@ io.on('connection', (socket) => {
   socket.on('message', (roomName, email, data) => { // 這裡我要接收roomName、email跟data
     console.log('email:', email)
     console.log('data', data)
-    // redis(id, data)
-    // socket.join(roomName);
+    redis(email, data)
     socket.to(roomName).emit('message', { email: `${email}`, data: `${data}` })
   })
 
