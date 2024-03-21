@@ -66,9 +66,17 @@ it("should return an error if an error occurs", async () => {
   await getStudents({}, cb);
 
     //A
-    sinon.assert.calledWith(cb, expectedError);
+    sinon.assert.calledWith(
+      cb,
+      sinon.match({
+        err: sinon.match
+          .instanceOf(Error)
+          .and(sinon.match.has("message", "Database error")),
+      })
+    );
     //B
     // expect(cb.calledWith(expectedError)).to.be.true;
+
 
 // 第一種
 // expect(cb.calledWith(sinon.match.instanceOf (Error) )).to.be.true;

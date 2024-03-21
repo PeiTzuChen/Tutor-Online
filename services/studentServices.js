@@ -8,20 +8,28 @@ const studentServices = {
       .then((students) => {
         console.log('進入')
         if (students.length < 1) {
-          return cb(null, 'doesn\'t have students data yet')
+          return cb(null, "doesn't have students data yet")
         }
         return cb(null, students)
       })
       .catch((err) => {
         console.log(err)
         return cb(err)
-      }
-      )
+      })
   },
   getStudent: (req, cb) => {
     const id = req.params.id
     Student.findByPk(id, {
-      attributes: { include: [[sequelize.literal('(SELECT row_num FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY total_learning_time DESC) AS row_num FROM Students) AS ranked_row WHERE id=11) '), 'rank']] }
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              '(SELECT row_num FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY total_learning_time DESC) AS row_num FROM Students) AS ranked_row WHERE id=11) '
+            ),
+            'rank'
+          ]
+        ]
+      }
     })
       .then((student) => {
         if (!student) {

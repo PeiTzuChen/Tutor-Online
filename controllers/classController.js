@@ -90,6 +90,16 @@ const classController = {
           data
         })
     })
+  },
+  getHistory: (req, res, next) => {
+    classServices.getHistory(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 

@@ -26,5 +26,5 @@ router.patch(
 router.post('/', classController.postClass)
 router.put('/:id', classController.putClass)
 router.delete('/:id', classController.deleteClass)
-
+router.get('/history/:roomName', classController.getHistory)
 module.exports = router

@@ -11,7 +11,7 @@ module.exports = function (io) {
     })
 
     socket.on('message', (roomName, email, data) => {
-      redis(roomName, email, data)
+      // redis(roomName, email, data)
       socket.to(roomName).emit('message', { email: `${email}`, data: `${data}` })
     })
     socket.on('disconnect', () => {
