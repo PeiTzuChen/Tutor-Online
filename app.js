@@ -37,7 +37,7 @@ app.use(route)
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://kingfish-generous-sharply.ngrok-free.app/',
+    origin: 'https://kingfish-generous-sharply.ngrok-free.app',
     // origin: 'https://tutoring-platform-becky.vercel.app',
     method: ['GET', 'POST'],
     allowedHeaders: ['ngrok-skip-browser-warning']
