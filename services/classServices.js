@@ -8,8 +8,7 @@ const {
 } = require('../helpers/date.helper')
 const uuidv4 = require('uuid').v4
 const baseURL = process.env.ClassLinkURL
-
-const { createClient } = require('redis')
+const { redisRead } = require('../helpers/redis.helper')
 const classServices = {
   getCreatedClasses: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
@@ -287,29 +286,29 @@ const classServices = {
     const { email } = req.user
     const roomName = req.params.roomName
 
-    const redis = async (roomName) => {
-      const client = createClient({
-        // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
-        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` // for Zeabur
-      })
-      client.on('ready', () => {
-        console.log('Redis is ready when take data')
-      })
-      client.on('error', (err) => {
-        console.log("Redis' error when take data", err)
-      })
-      await client.connect()
-      console.log('roomName', roomName)
-      const chat = await client.lRange(`chat:${roomName}`, 0, -1)
-      console.log('抓到redis 回傳chat', chat)
+    // const redis = async (roomName) => {
+    //   const client = createClient({
+    //     // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
+    //     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` // for Zeabur
+    //   })
+    //   client.on('ready', () => {
+    //     console.log('Redis is ready when take data')
+    //   })
+    //   client.on('error', (err) => {
+    //     console.log("Redis' error when take data", err)
+    //   })
+    //   await client.connect()
+    //   console.log('roomName', roomName)
+    //   const chat = await client.lRange(`chat:${roomName}`, 0, -1)
+    //   console.log('抓到redis 回傳chat', chat)
 
-      await client.quit()
-      return chat
-    }
+    //   await client.quit()
+    //   return chat
+    // }
 
     const getData = async (roomName, email) => {
       try {
-        const chat = await redis(roomName)
+        const chat = await redisRead(roomName)
         if (chat.length < 1) {
           return cb(null, "doesn't have chat history")
         }
