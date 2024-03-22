@@ -284,10 +284,10 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
-    console.log('進入get history')
     const { email } = req.user
-    const room = req.params.room
-    const redis = async (room) => {
+    const roomName = req.params.roomName
+
+    const redis = async (roomName) => {
       const client = createClient({
         // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
         url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` // for Zeabur
@@ -299,32 +299,32 @@ const classServices = {
         console.log("Redis' error when take data", err)
       })
       await client.connect()
-
-      const chat = await client.lRange(`chat:${room}`, 0, -1)
+      console.log('roomName', roomName)
+      const chat = await client.lRange(`chat:${roomName}`, 0, -1)
       console.log('抓到redis 回傳chat', chat)
 
       await client.quit()
       return chat
     }
 
-    const getData = async () => {
+    const getData = async (roomName, email) => {
       try {
-        const chat = await redis(room)
+        const chat = await redis(roomName)
         if (chat.length < 1) {
           return cb(null, "doesn't have chat history")
         }
-
-        const err = new Error('permission denied')
-        err.status = 401
+        // const err = new Error('permission denied')
+        // err.status = 401
         // 確認歷史對話裡的email有user的email
-        chat.some((message) => JSON.parse(message).email === email)
-          ? cb(null, chat)
-          : cb(err)
+        // chat.some((message) => JSON.parse(message).email === email)
+        //   ? cb(null, chat)
+        //   : cb(err)
+        cb(null, chat)
       } catch (err) {
         cb(err)
       }
     }
-    getData()
+    getData(roomName, email)
   }
 }
 
