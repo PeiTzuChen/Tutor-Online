@@ -6,14 +6,25 @@ const client = createClient({
   password: process.env.REDIS_PASSWORD // for Zeabur
 })
 
+// named func instead of anonymous func in order to remove listener and preventing potential memory leaks
+const onReady = () => {
+  console.log('Redis is ready')
+}
+
+const onError = (err) => {
+  console.log("Redis' error", err)
+}
+
 const redisOpen = async () => {
-  client.on('ready', () => {
-    console.log('Redis is ready')
-  })
-  client.on('error', (err) => {
-    console.log("Redis' error", err)
-  })
+  client.on('ready', onReady)
+  client.on('error', onError)
   await client.connect()
+}
+
+const redisClose = () => {
+  client.removeListener('ready', onReady)
+  client.removeListener('error', onError)
+  client.quit()
 }
 
 module.exports = {
@@ -26,14 +37,14 @@ module.exports = {
 
     await client.rPush(`chat:${roomName}`, JSON.stringify(list))
     console.log('寫入訊息', data)
-    await client.quit()
+    await redisClose
   },
   redisRead: async (roomName) => {
     console.log('進入redisRead')
     await redisOpen(roomName)
     const chat = await client.lRange(`chat:${roomName}`, 0, -1)
     console.log('讀歷史訊息 回傳chat', chat)
-    await client.quit()
+    await redisClose
     return chat
   }
 }
