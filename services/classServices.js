@@ -7,7 +7,8 @@ const {
   classOrder
 } = require('../helpers/date.helper')
 const uuidv4 = require('uuid').v4
-const baseURL = 'https://tutoring-platform-becky.vercel.app/classes/'
+const baseURL = process.env.ClassLinkURL
+
 const { createClient } = require('redis')
 const classServices = {
   getCreatedClasses: (req, cb) => {
@@ -30,7 +31,7 @@ const classServices = {
   getCompletedClasses: (req, cb) => {
     const studentId = req.params.studentId
     Class.findAll({
-      attributes: ['length', 'dateTimeRange', 'name', 'updatedAt'],
+      attributes: ['length', 'dateTimeRange', 'name', 'isCommented', 'teacherId', 'link', 'updatedAt'],
       where: { studentId, isCompleted: true },
       include: { model: Teacher, attributes: ['name', 'avatar'] },
       order: [['updatedAt', 'DESC']]
@@ -283,12 +284,13 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
+    console.log('進入get history')
     const { email } = req.user
-    const roomName = req.params.roomName
-    const redis = async (roomName) => {
+    const room = req.params.room
+    const redis = async (room) => {
       const client = createClient({
-        url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
-        // url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` //for Zeabur
+        // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
+        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` // for Zeabur
       })
       client.on('ready', () => {
         console.log('Redis is ready when take data')
@@ -298,8 +300,8 @@ const classServices = {
       })
       await client.connect()
 
-      const chat = await client.lRange(`chat:${roomName}`, 0, -1)
-      console.log('抓到redis chat', chat)
+      const chat = await client.lRange(`chat:${room}`, 0, -1)
+      console.log('抓到redis 回傳chat', chat)
 
       await client.quit()
       return chat
@@ -307,14 +309,13 @@ const classServices = {
 
     const getData = async () => {
       try {
-        const chat = await redis(roomName)
+        const chat = await redis(room)
         if (chat.length < 1) {
           return cb(null, "doesn't have chat history")
         }
 
         const err = new Error('permission denied')
         err.status = 401
-        console.log('確認chat有真的被讀到', chat)
         // 確認歷史對話裡的email有user的email
         chat.some((message) => JSON.parse(message).email === email)
           ? cb(null, chat)

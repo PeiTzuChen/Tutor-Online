@@ -17,6 +17,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      is_commented: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       name: {
         type: Sequelize.STRING
       },

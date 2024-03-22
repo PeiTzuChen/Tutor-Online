@@ -37,8 +37,8 @@ app.use(route)
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://internal-toad-properly.ngrok-free.app',
-    // origin: 'https://tutoring-platform-becky.vercel.app',
+    // origin: 'https://internal-toad-properly.ngrok-free.app',
+    origin: 'https://tutoring-platform-becky.vercel.app',
     method: ['GET', 'POST'],
     allowedHeaders: ['ngrok-skip-browser-warning']
   }

@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Comment, Teacher } = db
+const { Comment, Teacher, Class } = db
 
 const commentServices = {
   getComments: (req, cb) => {
@@ -20,7 +20,7 @@ const commentServices = {
   postComment: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
     const studentId = req.user.studentId
-    const { text } = req.body
+    const { text, classId } = req.body
     const score = Number(req.body.score)
 
     if (!text) {
@@ -43,6 +43,12 @@ const commentServices = {
           err.status = 400
           throw err
         }
+        Class.update(
+          {
+            isCommented: true
+          },
+          { where: { id: classId } }
+        )
         return Comment.create({
           text,
           score,

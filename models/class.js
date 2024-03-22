@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       isBooked: DataTypes.BOOLEAN,
       isCompleted: DataTypes.BOOLEAN,
+      isCommented: DataTypes.BOOLEAN,
       length: DataTypes.INTEGER,
       dateTimeRange: DataTypes.STRING,
       name: DataTypes.STRING,
