@@ -22,9 +22,9 @@ const redisOpen = async () => {
 }
 
 const redisClose = () => {
+  client.quit()
   client.removeListener('ready', onReady)
   client.removeListener('error', onError)
-  client.quit()
 }
 
 module.exports = {
