@@ -1,4 +1,4 @@
-const redisWrite = require('./redis.helper')
+const { redisWrite } = require('./redis.helper')
 
 module.exports = function (io) {
   io.on('connection', (socket) => {
