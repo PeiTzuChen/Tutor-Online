@@ -10,8 +10,6 @@ const { Server } = require('socket.io')
 const path = require('path')
 const { clientErrorHandler } = require('./middlewares/errorHandler')
 const socketHelper = require('./helpers/socket.helper')
-
-const testPath = require('./upload/testpath')
 // cross-origin
 app.use((req, res, next) => {
   res.setHeader(
