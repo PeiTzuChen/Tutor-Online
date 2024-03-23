@@ -76,21 +76,22 @@ const teacherServices = {
       .then((teachers) => {
         if (teachers.length < 1) {
           return cb(null, 'doesn\'t have teachers data yet')
+        } else {
+          const result = teachers.map((teacher) => ({
+            id: teacher.id,
+            name: teacher.name,
+            country: teacher.country,
+            introduction: teacher.introduction,
+            style: teacher.style,
+            avatar: teacher.avatar,
+            categories: teacher.categoriesInTeacher.map(
+              (category) => category.id
+            )
+          }))
+          const count = teachers.length // 總筆數
+          const teacherLimit = result.splice((page - 1) * limit, page * limit) // 第page頁，呈現limit筆的老師資料
+          return cb(null, { count, teacherLimit })
         }
-        const result = teachers.map((teacher) => ({
-          id: teacher.id,
-          name: teacher.name,
-          country: teacher.country,
-          introduction: teacher.introduction,
-          style: teacher.style,
-          avatar: teacher.avatar,
-          categories: teacher.categoriesInTeacher.map(
-            (category) => category.id
-          )
-        }))
-        const count = teachers.length // 總筆數
-        const teacherLimit = result.splice((page - 1) * limit, page * limit) // 第page頁，呈現limit筆的老師資料
-        return cb(null, { count, teacherLimit })
       })
       .catch((err) => cb(err))
   },

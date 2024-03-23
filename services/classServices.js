@@ -16,21 +16,29 @@ const classServices = {
       .then((classes) => {
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
+        } else {
+          const twoWeekClass = classes.filter((aClass) => {
+            // 確認是否近兩週內
+            return withinWeek(aClass.dateTimeRange, 2) === true
+          })
+          const result = classOrder(twoWeekClass) // 按照課程先後順序排序
+          return cb(null, result)
         }
-        const twoWeekClass = classes.filter((aClass) => {
-          // 確認是否近兩週內
-          return withinWeek(aClass.dateTimeRange, 2) === true
-        })
-        const result = classOrder(twoWeekClass) // 按照課程先後順序排序
-
-        return cb(null, result)
       })
       .catch((err) => cb(err))
   },
   getCompletedClasses: (req, cb) => {
     const studentId = req.params.studentId
     Class.findAll({
-      attributes: ['length', 'dateTimeRange', 'name', 'isCommented', 'teacherId', 'link', 'updatedAt'],
+      attributes: [
+        'length',
+        'dateTimeRange',
+        'name',
+        'isCommented',
+        'teacherId',
+        'link',
+        'updatedAt'
+      ],
       where: { studentId, isCompleted: true },
       include: { model: Teacher, attributes: ['name', 'avatar'] },
       order: [['updatedAt', 'DESC']]
@@ -38,11 +46,12 @@ const classServices = {
       .then((classes) => {
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
+        } else {
+          const result = classes.map((aClass) => ({
+            ...aClass.toJSON()
+          }))
+          return cb(null, result)
         }
-        const result = classes.map((aClass) => ({
-          ...aClass.toJSON()
-        }))
-        return cb(null, result)
       })
       .catch((err) => {
         cb(err)
@@ -60,13 +69,14 @@ const classServices = {
       .then((classes) => {
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
+        } else {
+          const oneWeekClass = classes.filter((aClass) => {
+            // 確認是否近一週內
+            return withinWeek(aClass.dateTimeRange, 1) === true
+          })
+          const result = classOrder(oneWeekClass) // 按照課程先後順序排序
+          return cb(null, result)
         }
-        const oneWeekClass = classes.filter((aClass) => {
-          // 確認是否近一週內
-          return withinWeek(aClass.dateTimeRange, 1) === true
-        })
-        const result = classOrder(oneWeekClass) // 按照課程先後順序排序
-        return cb(null, result)
       })
       .catch((err) => {
         cb(err)
@@ -84,14 +94,15 @@ const classServices = {
       .then((classes) => {
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
-        }
-        const oneWeekClass = classes.filter((aClass) => {
-          // 確認是否近一週內
-          return withinWeek(aClass.dateTimeRange, 1) === true
-        })
-        const result = classOrder(oneWeekClass) // 按照課程先後順序排序
+        } else {
+          const oneWeekClass = classes.filter((aClass) => {
+            // 確認是否近一週內
+            return withinWeek(aClass.dateTimeRange, 1) === true
+          })
+          const result = classOrder(oneWeekClass) // 按照課程先後順序排序
 
-        return cb(null, result)
+          return cb(null, result)
+        }
       })
       .catch((err) => {
         cb(err)
@@ -283,47 +294,26 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
-    const { email } = req.user
-    const roomName = req.params.roomName
-
-    // const redis = async (roomName) => {
-    //   const client = createClient({
-    //     // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}` // for docker
-    //     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` // for Zeabur
-    //   })
-    //   client.on('ready', () => {
-    //     console.log('Redis is ready when take data')
-    //   })
-    //   client.on('error', (err) => {
-    //     console.log("Redis' error when take data", err)
-    //   })
-    //   await client.connect()
-    //   console.log('roomName', roomName)
-    //   const chat = await client.lRange(`chat:${roomName}`, 0, -1)
-    //   console.log('抓到redis 回傳chat', chat)
-
-    //   await client.quit()
-    //   return chat
-    // }
-
-    const getData = async (roomName, email) => {
-      try {
-        const chat = await redisRead(roomName)
-        if (chat.length < 1) {
-          return cb(null, "doesn't have chat history")
+    const { studentId } = req.user
+    const id = req.params.classId
+    Class.findByPk(id, { raw: true })
+      .then((aClass) => {
+        if (studentId !== aClass.studentId) {
+          const err = new Error('permission denied')
+          err.status = 401
+          throw err
         }
-        // const err = new Error('permission denied')
-        // err.status = 401
-        // 確認歷史對話裡的email有user的email
-        // chat.some((message) => JSON.parse(message).email === email)
-        //   ? cb(null, chat)
-        //   : cb(err)
-        cb(null, chat)
-      } catch (err) {
-        cb(err)
-      }
-    }
-    getData(roomName, email)
+        const roomName = aClass.link.slice(-8)
+        return redisRead(roomName)
+      })
+      .then((chat) => {
+        // 若沒找到或是那堂課沒使用聊天記錄
+        const parsedData = chat.map((element) => JSON.parse(element))
+        chat.length < 1
+          ? cb(null, "doesn't have chat history")
+          : cb(null, parsedData)
+      })
+      .catch((err) => cb(err))
   }
 }
 

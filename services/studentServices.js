@@ -7,10 +7,9 @@ const studentServices = {
     Student.findAll({ raw: true, order: [['totalLearningTime', 'DESC']] })
       .then((students) => {
         console.log('進入')
-        if (students.length < 1) {
-          return cb(null, "doesn't have students data yet")
-        }
-        return cb(null, students)
+        students.length < 1
+          ? cb(null, "doesn't have students data yet")
+          : cb(null, students)
       })
       .catch((err) => {
         console.log(err)

@@ -10,10 +10,9 @@ const commentServices = {
       order: [['updatedAt', 'DESC']]
     })
       .then((comments) => {
-        if (comments.length < 1) {
-          return cb(null, "doesn't have comments data yet")
-        }
-        return cb(null, comments)
+        comments.length < 1
+          ? cb(null, "doesn't have comments data yet")
+          : cb(null, comments)
       })
       .catch((err) => cb(err))
   },

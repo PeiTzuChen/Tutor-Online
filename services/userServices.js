@@ -115,10 +115,9 @@ const userController = {
       ]
     })
       .then((users) => {
-        if (users.length < 1) {
-          return cb(null, "doesn't have users data yet")
-        }
-        return cb(null, users)
+        users.length < 1
+          ? cb(null, "doesn't have users data yet")
+          : cb(null, users)
       })
       .catch((err) => cb(err))
   }
