@@ -21,28 +21,25 @@ module.exports = {
       'SELECT id FROM Teachers;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    const studentsId = await queryInterface.sequelize.query(
-      'SELECT id FROM Students;',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
-    )
+    // const studentsId = await queryInterface.sequelize.query(
+    // 'SELECT id FROM Students;',
+    // { type: queryInterface.sequelize.QueryTypes.SELECT }
+    // )
     const categoriesId = await queryInterface.sequelize.query(
       'SELECT id FROM Categories;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert(
       'Classes',
-      Array.from({ length: 30 }, (_, i) => ({
-        name: faker.person.fullName(),
-        room_name: `${uuidv4().slice(
-          0,
-          8
-        )}`,
+      Array.from({ length: 10 }, (_, i) => ({
+        name: faker.word.adjective(),
+        room_name: `${uuidv4().slice(0, 8)}`,
         date_time_range: dateTimeRange[i],
         length: classLength(dateTimeRange[i]),
         teacher_id:
           teachersId[Math.floor(Math.random() * teachersId.length)].id,
-        student_id:
-          studentsId[Math.floor(Math.random() * studentsId.length)].id,
+        // student_id:
+        // studentsId[Math.floor(Math.random() * studentsId.length)].id,
         category_id:
           categoriesId[Math.floor(Math.random() * categoriesId.length)].id,
         created_at: new Date(),

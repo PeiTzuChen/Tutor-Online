@@ -27,7 +27,7 @@ module.exports = {
         teacher_id:
          i % 2 === 0 ? teachersId[Math.floor(Math.random() * teachersId.length)].id : null,
         student_id:
-          studentsId[Math.floor(Math.random() * studentsId.length)].id,
+        studentsId[Math.floor(Math.random() * studentsId.length)].id,
         created_at: new Date(),
         updated_at: new Date()
       }))
