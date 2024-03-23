@@ -7,7 +7,6 @@ const {
   classOrder
 } = require('../helpers/date.helper')
 const uuidv4 = require('uuid').v4
-const baseURL = process.env.ClassLinkURL
 const { redisRead } = require('../helpers/redis.helper')
 const classServices = {
   getCreatedClasses: (req, cb) => {
@@ -36,7 +35,7 @@ const classServices = {
         'name',
         'isCommented',
         'teacherId',
-        'link',
+        'roomName',
         'updatedAt'
       ],
       where: { studentId, isCompleted: true },
@@ -62,7 +61,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['length', 'dateTimeRange', 'name', 'link'],
+      attributes: ['length', 'dateTimeRange', 'name', 'roomName'],
       where: { teacherId, isBooked: true },
       include: { model: Student, attributes: ['name'] }
     })
@@ -87,7 +86,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['id', 'length', 'dateTimeRange', 'name', 'link'],
+      attributes: ['id', 'length', 'dateTimeRange', 'name', 'roomName'],
       where: { studentId, isBooked: true },
       include: { model: Teacher, attributes: ['name'] }
     })
@@ -217,7 +216,7 @@ const classServices = {
             return Class.create({
               name,
               dateTimeRange,
-              link: baseURL + uuidv4().slice(0, 8),
+              roomName: uuidv4().slice(0, 8),
               length,
               categoryId,
               teacherId
@@ -294,6 +293,7 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
+    console.log('getHistory req.user', req.user)
     const { studentId } = req.user
     const id = req.params.classId
     Class.findByPk(id, { raw: true })
@@ -303,7 +303,7 @@ const classServices = {
           err.status = 401
           throw err
         }
-        const roomName = aClass.link.slice(-8)
+        const roomName = aClass.roomName
         return redisRead(roomName)
       })
       .then((chat) => {

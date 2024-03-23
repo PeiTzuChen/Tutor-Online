@@ -33,7 +33,7 @@ module.exports = {
       'Classes',
       Array.from({ length: 30 }, (_, i) => ({
         name: faker.person.fullName(),
-        link: `https://tutoring-platform-becky.vercel.app/class/${uuidv4().slice(
+        room_name: `${uuidv4().slice(
           0,
           8
         )}`,

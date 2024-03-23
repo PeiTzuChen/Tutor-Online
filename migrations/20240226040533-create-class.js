@@ -30,7 +30,7 @@ module.exports = {
       date_time_range: {
         type: Sequelize.STRING
       },
-      link: {
+      room_name: {
         type: Sequelize.STRING
       },
       student_id: {
