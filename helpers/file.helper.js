@@ -15,6 +15,7 @@ const localFileHandler = (file) => {
       .readFile(file.path)
       .then((data) => {
         console.log('fileHelper接到data', data)
+        console.log('要存入的filePath', filePath)
         fspromises.writeFile(filePath, data).then(data => console.log('writeFile 寫成功')).catch(err => console.log('writeFile 出錯', err))
       })
       .then(() => resolve(`/${fileName}`))
