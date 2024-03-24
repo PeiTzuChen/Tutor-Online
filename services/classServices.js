@@ -6,7 +6,6 @@ const {
   withinWeek,
   classOrder
 } = require('../helpers/date.helper')
-const uuidv4 = require('uuid').v4
 const { redisRead } = require('../helpers/redis.helper')
 const classServices = {
   getCreatedClasses: (req, cb) => {
@@ -36,7 +35,6 @@ const classServices = {
         'name',
         'isCommented',
         'teacherId',
-        'roomName',
         'updatedAt'
       ],
       where: { studentId, isCompleted: true },
@@ -62,7 +60,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['id', 'length', 'dateTimeRange', 'name', 'roomName'],
+      attributes: ['id', 'length', 'dateTimeRange', 'name'],
       where: { teacherId, isBooked: true },
       include: { model: Student, attributes: ['name'] }
     })
@@ -87,7 +85,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['id', 'length', 'dateTimeRange', 'name', 'roomName'],
+      attributes: ['id', 'length', 'dateTimeRange', 'name'],
       where: { studentId, isBooked: true },
       include: { model: Teacher, attributes: ['name'] }
     })
@@ -217,7 +215,6 @@ const classServices = {
             return Class.create({
               name,
               dateTimeRange,
-              roomName: uuidv4().slice(0, 8),
               length,
               categoryId,
               teacherId

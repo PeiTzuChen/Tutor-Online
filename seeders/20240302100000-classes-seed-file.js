@@ -6,7 +6,6 @@ const time = ['18:00-18:30', '18:30-19:00', '19:00-19:30', '19:30-20:00', '20:00
 const day = Array.from({ length: 15 }, (_, i) =>
   dayjs().add(i, 'day').format('YYYY-MM-DD')
 )
-const uuidv4 = require('uuid').v4
 const dateTimeRange = Array.from(
   { length: 30 },
   () =>
@@ -33,7 +32,6 @@ module.exports = {
       'Classes',
       Array.from({ length: 10 }, (_, i) => ({
         name: faker.word.adjective(),
-        room_name: `${uuidv4().slice(0, 8)}`,
         date_time_range: dateTimeRange[i],
         length: classLength(dateTimeRange[i]),
         teacher_id:
