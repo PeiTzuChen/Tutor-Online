@@ -303,8 +303,7 @@ const classServices = {
           err.status = 401
           throw err
         }
-        const roomName = aClass.roomName
-        return redisRead(roomName)
+        return redisRead(aClass.id)
       })
       .then((chat) => {
         // 若沒找到或是那堂課沒使用聊天記錄

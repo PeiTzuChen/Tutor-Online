@@ -28,21 +28,21 @@ const redisClose = () => {
 }
 
 module.exports = {
-  redisWrite: async (roomName, email, data) => {
+  redisWrite: async (classId, email, data) => {
     console.log('進入redisWrite')
     await redisOpen()
     const list = {}
     list.email = email
     list.data = data
 
-    await client.rPush(`chat:${roomName}`, JSON.stringify(list))
+    await client.rPush(`chat:${classId}`, JSON.stringify(list))
     console.log('寫入訊息', data)
     await redisClose()
   },
-  redisRead: async (roomName) => {
+  redisRead: async (classId) => {
     console.log('進入redisRead')
-    await redisOpen(roomName)
-    const chat = await client.lRange(`chat:${roomName}`, 0, -1)
+    await redisOpen(classId)
+    const chat = await client.lRange(`chat:${classId}`, 0, -1)
     console.log('讀歷史訊息 回傳chat', chat)
     await redisClose()
     return chat

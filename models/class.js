@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       length: DataTypes.INTEGER,
       dateTimeRange: DataTypes.STRING,
       name: DataTypes.STRING,
-      roomName: DataTypes.STRING,
       studentId: DataTypes.INTEGER,
       teacherId: DataTypes.INTEGER,
       categoryId: DataTypes.INTEGER
