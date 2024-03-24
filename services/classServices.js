@@ -30,6 +30,7 @@ const classServices = {
     const studentId = req.params.studentId
     Class.findAll({
       attributes: [
+        'id',
         'length',
         'dateTimeRange',
         'name',
@@ -61,7 +62,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       nest: true,
-      attributes: ['length', 'dateTimeRange', 'name', 'roomName'],
+      attributes: ['id', 'length', 'dateTimeRange', 'name', 'roomName'],
       where: { teacherId, isBooked: true },
       include: { model: Student, attributes: ['name'] }
     })
@@ -293,7 +294,6 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
-    console.log('getHistory req.user', req.user)
     const { studentId } = req.user
     const id = req.params.classId
     Class.findByPk(id, { raw: true })
