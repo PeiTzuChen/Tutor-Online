@@ -90,6 +90,7 @@ const userController = {
         }).then(user => {
           client.revokeCredentials()
           req.user = user
+          delete user.password
           const token = jwt.sign(
             {
               id: user.id,
