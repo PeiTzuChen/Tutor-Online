@@ -3,8 +3,11 @@ const { User, Student, Teacher } = db
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require('google-auth-library')
-const transporter = require('../helpers/subMail')
+const transporter = require('../helpers/submail.helper')
 const { Op } = require('sequelize')
+const newsURL =
+  'https://api.worldnewsapi.com/search-news?max-sentiment=-0.4&news-sources=https%3A%2F%2Fwww.huffingtonpost.co.uk&language=en&api-key=6484fc4f42a748e99e4db84f3bf6fc4a'
+const axios = require('axios')
 const userController = {
   signup: (req, cb) => {
     const { email, password, passwordCheck } = req.body
@@ -151,35 +154,36 @@ const userController = {
           err.status = 401
           throw err
         }
-        return User.findAll({
-          raw: true,
-          where: {
-            subMail: {
-              [Op.not]: null
-            }
-          }
-        }).then(users => {
-          const subscriber = users.map((user) => user.subMail).join()
-          const mailOptions = {
-            from: process.env.USER_EMAIL,
-            to: subscriber,
-            subject: '測試',
-            html: '<h1>來自becky的信</h1>'
-          }
+        return Promise.all([
+          User.findAll({ raw: true, where: { subMail: { [Op.not]: null } } }),
+          axios.get(newsURL)
+        ])
+      })
+      .then(([users, response]) => {
+        const topic = response.data.news[0].title
+        const image = response.data.news[0].image
+        const author = response.data.news[0].author
+        const text = response.data.news[0].text
+        const subscriber = users.map((user) => user.subMail).join()
+        const mailOptions = {
+          from: process.env.USER_EMAIL,
+          to: subscriber,
+          subject: '電子報',
+          html: `<h1>${topic}</h1>   <h3>${author}</h3>  <p>${text}</p>
+          <img src=${image}>`
+        }
 
-          transporter.sendMail(mailOptions, (err, info) => {
-            if (err) {
-              err.message = '傳送信件失敗'
-              cb(err)
-            } else {
-              cb(null, '傳送信件成功')
-            }
-          })
-        })
-          .catch((err) => {
+        transporter.sendMail(mailOptions, (err, info) => {
+          if (err) {
+            err.message = '傳送信件失敗'
             cb(err)
+          } else {
+            cb(null, '傳送信件成功')
           }
-          )
+        })
+      })
+      .catch((err) => {
+        cb(err)
       })
   }
 }
