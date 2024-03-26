@@ -11,7 +11,7 @@ module.exports = {
         country: countryName[Math.floor(Math.random() * 4)],
         introduction: faker.lorem.paragraphs(),
         style: faker.lorem.paragraphs(),
-        // avatar: faker.image.avatar(),
+        avatar: faker.image.avatar(),
         created_at: new Date(),
         updated_at: new Date()
       })),

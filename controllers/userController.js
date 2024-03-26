@@ -41,6 +41,26 @@ const userController = {
           data
         })
     })
+  },
+  subMail: (req, res, next) => {
+    userServices.subMail(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
+  sendMail: (req, res, next) => {
+    userServices.sendMail(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
   }
 }
 

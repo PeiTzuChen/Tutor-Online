@@ -16,6 +16,12 @@ router.post('/signup', userController.signup)
 router.post('/signin', signInAuthenticate, userController.signIn)
 router.post('/auth2/google', userController.GoogleSignIn)
 router.get('/admin/users', authenticatedAdmin, userController.getUsers)
+router.post(
+  '/submail/:userId/send',
+  authenticatedAdmin,
+  userController.sendMail
+)
+router.post('/submail/:userId', authenticated, userController.subMail)
 router.use('/teachers', authenticated, teacher)
 router.use('/students', authenticated, student)
 router.use('/classes', authenticated, classes)
