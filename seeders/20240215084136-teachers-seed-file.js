@@ -7,7 +7,7 @@ module.exports = {
     await queryInterface.bulkInsert(
       'Teachers',
       Array.from({ length: 10 }, () => ({
-        name: faker.person.fullName(),
+        name: faker.person.lastName(),
         country: countryName[Math.floor(Math.random() * 4)],
         introduction: faker.lorem.paragraphs(),
         style: faker.lorem.paragraphs(),

@@ -138,7 +138,23 @@ const classServices = {
       err.status = 401
       throw err
     }
-    Class.findOne({ where: { teacherId, dateTimeRange } })
+
+    Class.findAll({ raw: true, where: { studentId } })
+      .then((classes) => {
+        if (classes.length > 0) {
+          const overlap = classes.some((aClass) => {
+            return isOverlapping(aClass.dateTimeRange, dateTimeRange)
+          })
+          if (overlap) {
+            const err = new Error(
+              'Error: You already have class in this time!'
+            )
+            err.status = 400
+            throw err
+          }
+        }
+        return Class.findOne({ where: { teacherId, dateTimeRange } })
+      })
       .then((aClass) => {
         if (!aClass) {
           const err = new Error("the class doesn't exist")
