@@ -160,7 +160,6 @@ const userController = {
         ])
       })
       .then(([users, response, transporter]) => {
-        console.log('transporter', transporter)
         const topic = response.data.news[0].title
         const image = response.data.news[0].image
         const author = response.data.news[0].author

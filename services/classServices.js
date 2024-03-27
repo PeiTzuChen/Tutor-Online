@@ -173,9 +173,9 @@ const classServices = {
       throw err
     }
 
-    // 使用async 確保先確認 if studentId
+    // 使用async確認自己是學生身份或是老師身份會不會跟新增課程衝突
     async function postClass () {
-      // 確認老師開課時間是否與自己是學生身份的預定課程有衝突
+      // 確認開課時間是否與自己是學生身份的預定課程有衝突
       if (studentId) {
         await Class.findAll({ raw: true, where: { studentId } })
           .then((classes) => {

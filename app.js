@@ -43,29 +43,6 @@ const io = new Server(server, {
 })
 socketHelper(io)
 
-
-
-
-
-// const mailOptions = {
-//   from: process.env.USER_EMAIL,
-//   to: 'prettysna@hotmail.com',
-//   subject: '電子報',
-//   html: '<h1>送出３</h1>'
-// }
-// getAccessToken().then((transporter) => {
-//   console.log('正在發信中')
-//   transporter.sendMail(mailOptions, (err, info) => {
-//     if (err) {
-//       err.message = '傳送信件失敗'
-//       console.log('傳送信件失敗')
-//     } else {
-//       console.log('info', info)
-//       console.log('傳送信件成功')
-//     }
-//   })
-// })
-
 app.use(clientErrorHandler)
 server.listen(port, () =>
   console.log(`server listening on http://localhost:${port}`)

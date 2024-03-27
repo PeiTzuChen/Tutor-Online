@@ -1,6 +1,5 @@
 const request = require("supertest");
 const chai = require("chai");
-const sinon = require("sinon");
 const should = chai.should();
 
 const app = require("../app")
