@@ -43,69 +43,28 @@ const io = new Server(server, {
 })
 socketHelper(io)
 
-const nodemailer = require('nodemailer')
-const { google } = require('googleapis')
-const OAuth2Client = google.auth.OAuth2
 
-const getAccessToken = async () => {
-  const oauth2Client = new OAuth2Client(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URI
-  )
 
-  oauth2Client.setCredentials({
-    refresh_token: process.env.REFRESH_TOKEN
-  })
-  // getToken 是拿到 Authorization Grant 之後，透過getToken(req.query.code)拿refresh token & access token， getAccessToken是已經有refresh token可以直接用此method拿access token
-  // await oauth2Client.getAccessToken(function (err, accessToken) {
-  //     if (err) {
-  //       console.error('Error getting access token:', err)
-  //     }
-  //     // console.log(accessToken)
-  //     return accessToken
-  //   })
 
-  const access = await new Promise((resolve, reject) => {
-    oauth2Client.getAccessToken((err, token) => {
-      if (err) {
-        console.log('*ERR: ', err)
-        reject(err)
-      }
-      resolve(token)
-    })
-  })
-  console.log('access', access)
-  return access
-}
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    type: 'OAuth2',
-    user: process.env.USER_EMAIL,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    refreshToken: process.env.REFRESH_TOKEN,
-    accessToken: getAccessToken()
-  }
-})
-console.log(getAccessToken())
-const mailOptions = {
-  from: process.env.USER_EMAIL,
-  to: 'prettysna@hotmail.com',
-  subject: '電子報',
-  html: '<h1>送出</h1>'
-}
-
-transporter.sendMail(mailOptions, (err, info) => {
-  if (err) {
-    err.message = '傳送信件失敗'
-    console.log('傳送信件失敗')
-  } else {
-    console.log('傳送信件成功')
-  }
-})
+// const mailOptions = {
+//   from: process.env.USER_EMAIL,
+//   to: 'prettysna@hotmail.com',
+//   subject: '電子報',
+//   html: '<h1>送出３</h1>'
+// }
+// getAccessToken().then((transporter) => {
+//   console.log('正在發信中')
+//   transporter.sendMail(mailOptions, (err, info) => {
+//     if (err) {
+//       err.message = '傳送信件失敗'
+//       console.log('傳送信件失敗')
+//     } else {
+//       console.log('info', info)
+//       console.log('傳送信件成功')
+//     }
+//   })
+// })
 
 app.use(clientErrorHandler)
 server.listen(port, () =>

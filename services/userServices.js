@@ -3,7 +3,7 @@ const { User, Student, Teacher } = db
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { OAuth2Client } = require('google-auth-library')
-const transporter = require('../helpers/submail.helper')
+const createTransporter = require('../helpers/submail.helper')
 const { Op } = require('sequelize')
 const newsURL =
   'https://api.worldnewsapi.com/search-news?max-sentiment=-0.4&news-sources=https%3A%2F%2Fwww.huffingtonpost.co.uk&language=en&api-key=6484fc4f42a748e99e4db84f3bf6fc4a'
@@ -156,10 +156,11 @@ const userController = {
         }
         return Promise.all([
           User.findAll({ raw: true, where: { subMail: { [Op.not]: null } } }),
-          axios.get(newsURL)
+          axios.get(newsURL), createTransporter()
         ])
       })
-      .then(([users, response]) => {
+      .then(([users, response, transporter]) => {
+        console.log('transporter', transporter)
         const topic = response.data.news[0].title
         const image = response.data.news[0].image
         const author = response.data.news[0].author
