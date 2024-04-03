@@ -7,6 +7,7 @@ const {
   classOrder
 } = require('../helpers/date.helper')
 const { redisRead } = require('../helpers/redis.helper')
+const { Op } = require('sequelize')
 const classServices = {
   getCreatedClasses: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
@@ -54,6 +55,25 @@ const classServices = {
       .catch((err) => {
         cb(err)
       })
+  },
+  patchCompletedClass: (req, cb) => {
+    const classId = req.params.classId
+    Class.findByPk(classId)
+      .then((aClass) => {
+        if (!aClass) {
+          const err = new Error("Class didn't exist!")
+          err.status = 404
+          throw err
+        }
+        if (aClass.isCompleted) {
+          const err = new Error('This class has been completed before')
+          err.status = 400
+          throw err
+        }
+        return aClass.update({ isCompleted: true })
+      })
+      .then((aClass) => cb(null, aClass))
+      .catch((err) => cb(err))
   },
   getTeacherClasses: (req, cb) => {
     const teacherId = req.params.id
@@ -106,7 +126,7 @@ const classServices = {
         cb(err)
       })
   },
-  patchStudentClasses: (req, cb) => {
+  patchBookedClass: (req, cb) => {
     const classId = req.params.id
     Class.findByPk(classId)
       .then((aClass) => {
@@ -127,7 +147,7 @@ const classServices = {
         cb(err)
       })
   },
-  patchClasses: (req, cb) => {
+  patchClass: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
     const studentId = parseInt(req.user.studentId)
     const { dateTimeRange } = req.body
@@ -171,7 +191,7 @@ const classServices = {
       .then((aClass) => cb(null, aClass))
       .catch((err) => cb(err))
   },
-  postClass: (req, res, cb) => {
+  postClass: (req, cb) => {
     const { name, dateTimeRange } = req.body
     const { studentId, teacherId } = req.user
     const categoryId = parseInt(req.body.category)
@@ -188,61 +208,40 @@ const classServices = {
       err.status = 400
       throw err
     }
-
-    // 使用async確認自己是學生身份或是老師身份會不會跟新增課程衝突
-    async function postClass () {
-      // 確認開課時間是否與自己是學生身份的預定課程有衝突
-      if (studentId) {
-        await Class.findAll({ raw: true, where: { studentId } })
-          .then((classes) => {
-            if (classes.length > 0) {
-              const overlap = classes.some((aClass) => {
-                return isOverlapping(aClass.dateTimeRange, dateTimeRange)
-              })
-              if (overlap) {
-                const err = new Error(
-                  'This class conflicts with other class you booked as student'
-                )
-                err.status = 400
-                throw err
-              }
-            }
-          })
-          .catch((err) => cb(err))
+    // 確認自己是學生身份或是老師身份時會不會跟新增課程衝突
+    Class.findAll({
+      raw: true,
+      where: {
+        [Op.or]: [
+          { studentId },
+          { teacherId }
+        ]
       }
-      // 若上述沒衝突，則確認身為老師是否自己已在此時段開課
-      if (res.statusCode !== 400) {
-        await Class.findAll({ raw: true, where: { teacherId } })
-          .then((classes) => {
-            if (classes.length > 0) {
-              const overlap = classes.some((aClass) => {
-                return isOverlapping(aClass.dateTimeRange, dateTimeRange)
-              })
-              if (overlap) {
-                const err = new Error(
-                  'This class conflicts with other class you create as teacher'
-                )
-                err.status = 400
-                throw err
-              }
-            }
-            const length = classLength(dateTimeRange)
-
-            return Class.create({
-              name,
-              dateTimeRange,
-              length,
-              categoryId,
-              teacherId
-            })
-          })
-          .then((aClass) => {
-            cb(null, aClass.toJSON())
-          })
-          .catch((err) => cb(err))
+    }).then(classes => {
+      if (classes.length > 0) {
+        const overlap = classes.some((aClass) => {
+          return isOverlapping(aClass.dateTimeRange, dateTimeRange)
+        })
+        if (overlap) {
+          const err = new Error(
+            'This class conflicts with other class you booked or created'
+          )
+          err.status = 400
+          throw err
+        }
       }
-    }
-    postClass()
+      const length = classLength(dateTimeRange) // 同步ft
+      return Class.create({
+        name,
+        dateTimeRange,
+        length,
+        categoryId,
+        teacherId
+      })
+    }).then((aClass) => {
+      cb(null, aClass.toJSON())
+    })
+      .catch((err) => cb(err))
   },
   putClass: (req, cb) => {
     const { name, dateTimeRange } = req.body
@@ -307,17 +306,25 @@ const classServices = {
       .catch((err) => cb(err))
   },
   getHistory: (req, cb) => {
-    const { studentId } = req.user
+    const { studentId, teacherId } = req.user
     const id = req.params.classId
-    Class.findByPk(id, { raw: true })
-      .then((aClass) => {
-        if (studentId !== aClass.studentId) {
-          const err = new Error('permission denied')
-          err.status = 401
-          throw err
-        }
-        return redisRead(aClass.id)
+
+    // 確認若是學生身份，有預訂此堂課，或者若是老師有開設此堂課，滿足其一就能看對話紀錄
+    Promise.all([
+      Student.findByPk(studentId, {
+        include: { model: Class, where: { isBooked: 1, id } }
+      }),
+      Teacher.findByPk(teacherId, {
+        include: { model: Class, where: { id } }
       })
+    ]).then(([Sdata, Tdata]) => {
+      if (!(Sdata || Tdata)) {
+        const err = new Error('permission denied')
+        err.status = 401
+        throw err
+      }
+      return redisRead(id)
+    })
       .then((chat) => {
         // 若沒找到或是那堂課沒使用聊天記錄
         const parsedData = chat.map((element) => JSON.parse(element))

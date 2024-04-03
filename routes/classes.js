@@ -5,6 +5,7 @@ router.get(
   '/:studentId/completed',
   classController.getCompletedClasses
 )
+router.patch('/:classId/completed', classController.patchCompletedClass)
 router.get(
   '/teacherbooked/:id',
   classController.getTeacherClasses
@@ -13,7 +14,7 @@ router.get(
   '/studentbooked/:id',
   classController.getStudentClasses
 )
-router.patch('/studentbooked/:id', classController.patchStudentClasses)
+router.patch('/studentbooked/:id', classController.patchBookedClass)
 
 router.get(
   '/:teacherId',
@@ -21,7 +22,7 @@ router.get(
 )
 router.patch(
   '/:teacherId',
-  classController.patchClasses
+  classController.patchClass
 )
 router.post('/', classController.postClass)
 router.put('/:id', classController.putClass)

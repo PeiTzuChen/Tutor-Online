@@ -41,8 +41,8 @@ const classController = {
         })
     })
   },
-  patchStudentClasses: (req, res, next) => {
-    classServices.patchStudentClasses(req, (err, data) => {
+  patchBookedClass: (req, res, next) => {
+    classServices.patchBookedClass(req, (err, data) => {
       err
         ? next(err)
         : res.status(200).json({
@@ -51,8 +51,18 @@ const classController = {
         })
     })
   },
-  patchClasses: (req, res, next) => {
-    classServices.patchClasses(req, (err, data) => {
+  patchClass: (req, res, next) => {
+    classServices.patchClass(req, (err, data) => {
+      err
+        ? next(err)
+        : res.status(200).json({
+          status: 'success',
+          data
+        })
+    })
+  },
+  patchCompletedClass: (req, res, next) => {
+    classServices.patchCompletedClass(req, (err, data) => {
       err
         ? next(err)
         : res.status(200).json({
@@ -62,7 +72,7 @@ const classController = {
     })
   },
   postClass: (req, res, next) => {
-    classServices.postClass(req, res, (err, data) => {
+    classServices.postClass(req, (err, data) => {
       err
         ? next(err)
         : res.status(200).json({
