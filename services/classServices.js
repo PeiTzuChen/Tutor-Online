@@ -70,6 +70,13 @@ const classServices = {
           err.status = 400
           throw err
         }
+        const studentId = aClass.studentId
+        Student.findByPk(studentId).then(
+          student => {
+            const totalLearningTime = student.totalLearningTime + aClass.length
+            student.update({ totalLearningTime })
+          }
+        )
         return aClass.update({ isCompleted: true })
       })
       .then((aClass) => cb(null, aClass))

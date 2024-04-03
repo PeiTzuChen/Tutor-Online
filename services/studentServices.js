@@ -18,9 +18,9 @@ const studentServices = {
     Student.findByPk(id, {
       attributes: {
         include: [
-          [
+          [ // 增加rank欄位，透過mySQL計算總學習時數排名
             sequelize.literal(
-              '(SELECT row_num FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY total_learning_time DESC) AS row_num FROM Students) AS ranked_row WHERE id=11) '
+              `(SELECT row_num FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY total_learning_time DESC) AS row_num FROM Students) AS ranked_row WHERE id=${id}) `
             ),
             'rank'
           ]
