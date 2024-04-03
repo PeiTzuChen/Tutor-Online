@@ -40,3 +40,5 @@ temp/*
 docker-compose.yaml
 Dockerfile
 
+.eslintignore
+.eslintrc.yml

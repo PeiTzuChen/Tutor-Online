@@ -164,10 +164,10 @@ const teacherServices = {
           })
         )
         CategoryTeacher.bulkCreate(categories)
-        User.findByPk(userId).then((user) =>
-          user.update({ teacherId: teacher.id })
-        )
-        return cb(null, teacher)
+        User.findByPk(userId)
+          .then((user) =>
+            user.update({ teacherId: teacher.id }))
+          .then(user => cb(null, { teacher, user }))
       })
       .catch((err) => cb(err))
   },

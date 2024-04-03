@@ -1,9 +1,9 @@
 const { createClient } = require('redis')
 const client = createClient({
-  // url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}`
+  url: `redis://${process.env.REDIS_IP}:${process.env.REDIS_PORT}`
   // for docker
-  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-  password: process.env.REDIS_PASSWORD // for Zeabur
+  // url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  // password: process.env.REDIS_PASSWORD // for Zeabur
 })
 
 // named func instead of anonymous func in order to remove listener and preventing potential memory leaks

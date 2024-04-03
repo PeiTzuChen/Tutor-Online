@@ -12,6 +12,7 @@ const createTransporter = () => {
     refresh_token: process.env.REFRESH_TOKEN
   })
   // getToken 是拿到 Authorization Grant 之後，透過getToken(req.query.code)拿refresh token & access token， getAccessToken是已經有refresh token可以直接用此method拿access token
+
   return new Promise((resolve, reject) => {
     oauth2Client.getAccessToken((err, accessToken) => {
       if (err) {
@@ -29,6 +30,7 @@ const createTransporter = () => {
           accessToken
         }
       })
+      console.log('拿到accesstoken', accessToken)
       resolve(transporter)
     })
   })

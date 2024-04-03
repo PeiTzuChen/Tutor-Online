@@ -61,10 +61,12 @@ const studentServices = {
         })
       })
       .then((student) => {
-        User.findByPk(userId).then((user) =>
-          user.update({ studentId: student.id })
-        )
-        return cb(null, student)
+        User.findByPk(userId)
+          .then(user =>
+            user.update({ studentId: student.id }))
+          .then(user =>
+            cb(null, { student, user })
+          )
       })
       .catch((err) => cb(err))
   },
