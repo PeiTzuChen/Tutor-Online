@@ -1,12 +1,13 @@
 const db = require('../models')
-const { Comment, Teacher, Class } = db
+const { Comment, Teacher, Class, Student } = db
 
 const commentServices = {
   getComments: (req, cb) => {
     const teacherId = req.params.teacherId
     Comment.findAll({
-      raw: true,
+      // raw: true,
       where: { teacherId },
+      include: { model: Student, attributes: ['name'] },
       order: [['updatedAt', 'DESC']]
     })
       .then((comments) => {

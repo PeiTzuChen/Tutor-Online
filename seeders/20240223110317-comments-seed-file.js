@@ -14,7 +14,7 @@ module.exports = {
 
     await queryInterface.bulkInsert(
       'Comments',
-      Array.from({ length: 30 }, () => ({
+      Array.from({ length: 20 }, () => ({
         score: (Math.random() * 5).toFixed(1),
         text: faker.lorem.words(5),
         teacher_id:

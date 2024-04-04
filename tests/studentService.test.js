@@ -40,14 +40,14 @@ afterEach(() => {
  });
 
 it("should return an error if an error occurs", async () => {
-  
+  //可以用it.only單獨測試
   const expectedError = new Error("Database error")
   sandbox.stub(Student, "findAll").rejects(expectedError)
   const cb = sandbox.stub();
   await getStudents({}, cb);
   
   // sinon.assert.calledWith(cb, expectedError);
-    expect(
+  expect(
       cb.calledWith(
         sinon.match
           .instanceOf(Error)

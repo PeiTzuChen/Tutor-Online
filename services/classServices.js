@@ -11,7 +11,7 @@ const { Op } = require('sequelize')
 const classServices = {
   getCreatedClasses: (req, cb) => {
     const teacherId = parseInt(req.params.teacherId)
-    Class.findAll({ raw: true, where: { teacherId } })
+    Class.findAll({ raw: true, where: { teacherId, isCompleted: false } })
       .then((classes) => {
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
@@ -88,7 +88,7 @@ const classServices = {
       raw: true,
       nest: true,
       attributes: ['id', 'length', 'dateTimeRange', 'name'],
-      where: { teacherId, isBooked: true },
+      where: { teacherId, isBooked: true, isCompleted: false },
       include: { model: Student, attributes: ['name'] }
     })
       .then((classes) => {
@@ -113,7 +113,7 @@ const classServices = {
       raw: true,
       nest: true,
       attributes: ['id', 'length', 'dateTimeRange', 'name'],
-      where: { studentId, isBooked: true },
+      where: { studentId, isBooked: true, isCompleted: false },
       include: { model: Teacher, attributes: ['name'] }
     })
       .then((classes) => {

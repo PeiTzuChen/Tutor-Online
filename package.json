@@ -12,7 +12,6 @@
     "dev": "NODE_ENV=development nodemon app.js ",
     "user-test": "NODE_ENV=development mocha tests/userController.test.js --exit --recursive --timeout 5000",
     "student-test": "NODE_ENV=development mocha tests/studentService.test.js --exit --recursive --timeout 5000",
-    "class-test": "NODE_ENV=development REDIS_PORT=6379 REDIS_IP=127.0.0.1 mocha tests/classService.test.js --exit --recursive --timeout 5000",
     "dbmigrate": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
