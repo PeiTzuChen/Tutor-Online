@@ -42,8 +42,8 @@ router.put(
   commentController.putComment
 )
 
-router.get('/test', (req, res, next) => {
-  res.send('Hi hello')
+router.get('/', (req, res, next) => {
+  res.send('Hi this is tutor online backend api server')
 })
 router.use(routeErrorHandler)
 module.exports = router

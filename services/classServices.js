@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Class, Student, Teacher } = db
+const { Class, Student, Teacher, Comment } = db
 const {
   isOverlapping,
   classLength,
@@ -39,17 +39,24 @@ const classServices = {
         'updatedAt'
       ],
       where: { studentId, isCompleted: true },
-      include: { model: Teacher, attributes: ['name', 'avatar'] },
+      include: [
+        {
+          model: Teacher,
+          attributes: ['id', 'name', 'avatar'],
+          include: { model: Comment, where: { studentId }, required: false }
+        }
+      ],
       order: [['updatedAt', 'DESC']]
     })
       .then((classes) => {
+        console.log('classes', classes)
         if (classes.length < 1) {
           return cb(null, "doesn't have classes data yet")
         } else {
           const result = classes.map((aClass) => ({
             ...aClass.toJSON()
           }))
-          return cb(null, result)
+          return cb(null, { classData: result })
         }
       })
       .catch((err) => {

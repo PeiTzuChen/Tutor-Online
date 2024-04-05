@@ -71,7 +71,6 @@ const commentServices = {
       err.status = 400
       throw err
     }
-
     Comment.findByPk(commentId)
       .then((comment) => {
         if (!comment) {
