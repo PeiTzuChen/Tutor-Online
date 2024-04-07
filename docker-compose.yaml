@@ -1,0 +1,49 @@
+version: '1.29.2'
+# name: 可以幫專案命名
+
+services:
+  mySQL:
+    image: mysql:8.2.0-oraclelinux8
+    ports:
+      - 8080:3306
+    environment:
+       MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_DATABASE: tutor_online
+    volumes:  # 左邊是創建好的資料夾，存在docker本地，右邊是image裡mysql放資料的地方
+      - MySQL-data:/var/lib/mysql
+    healthcheck: # 測試MySQL是否完成
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 9000:6379 
+    volumes:
+      - Redis-data:/data
+
+  webapp:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+        REDIS_PORT: 6379
+        REDIS_IP: redis
+        MYSQL_USER: root
+        MYSQL_ROOT_HOST: mySQL
+        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_DATABASE: tutor_online
+        MYSQL_PORT: 3306
+    depends_on:
+      mySQL:
+        condition: service_healthy   #等待SQL創建結束才執行node service
+    command: > # 這裡會蓋過 dockerfile的 CMD
+        sh -c "npm run dbmigrate && node app.js"
+volumes:  # 創建volumes供各種service用，不同services可以共用同一個volume
+  MySQL-data:
+    driver: local
+  Redis-data:
+    driver: local
+  
+
