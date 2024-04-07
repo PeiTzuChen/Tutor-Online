@@ -8,10 +8,10 @@ module.exports = {
       'SELECT id FROM Teachers;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    const studentsId = await queryInterface.sequelize.query(
-      'SELECT id FROM Students;',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
-    )
+    // const studentsId = await queryInterface.sequelize.query(
+    //   'SELECT id FROM Students;',
+    //   { type: queryInterface.sequelize.QueryTypes.SELECT }
+    // )
     await queryInterface.bulkInsert('Users', [
       {
         email: 'root@example.com',
@@ -24,10 +24,12 @@ module.exports = {
         email: faker.internet.exampleEmail(),
         password: bcrypt.hashSync('12345678', 10),
         is_admin: false,
+        // teacher_id:
+        //   i % 2 === 0
+        //     ? teachersId[Math.floor(Math.random() * teachersId.length)].id
+        //     : null,
         teacher_id:
-         i % 2 === 0 ? teachersId[Math.floor(Math.random() * teachersId.length)].id : null,
-        student_id:
-        studentsId[Math.floor(Math.random() * studentsId.length)].id,
+          teachersId[Math.floor(Math.random() * teachersId.length)].id,
         created_at: new Date(),
         updated_at: new Date()
       }))

@@ -37,8 +37,8 @@ npm-debug.log
 
 temp/*
 
-docker-compose.yaml
-Dockerfile
-
 .eslintignore
 .eslintrc.yml
+
+docker-compose.yaml
+Dockerfile

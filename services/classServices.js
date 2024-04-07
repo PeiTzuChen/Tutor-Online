@@ -226,8 +226,7 @@ const classServices = {
     Class.findAll({
       raw: true,
       where: {
-        [Op.or]: [
-          { studentId },
+        [Op.or]: [studentId ? { studentId } : null,
           { teacherId }
         ]
       }

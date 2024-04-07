@@ -1,7 +1,4 @@
 const request = require("supertest");
-const chai = require("chai");
-const should = chai.should();
-
 const app = require("../app")
 
 describe("登入測試: POST /signin", function () {

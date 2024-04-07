@@ -28,8 +28,9 @@ app.use((req, res, next) => {
   } // 需寫在res.setHeader底部，第一次options request也會讀setHeader值
   next()
 })
-app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(express.json())
+app.use(clientErrorHandler) // 若前端json格式有誤
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(passport.initialize())
 app.use(route)
 
@@ -43,7 +44,6 @@ const io = new Server(server, {
 })
 socketHelper(io)
 
-app.use(clientErrorHandler)
 server.listen(port, () =>
   console.log(`server listening on http://localhost:${port}`)
 )

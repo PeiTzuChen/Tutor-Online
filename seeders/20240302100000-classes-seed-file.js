@@ -3,7 +3,7 @@ const dayjs = require('dayjs')
 const { faker } = require('@faker-js/faker')
 const { classLength } = require('../helpers/date.helper')
 const time = ['18:00-18:30', '18:30-19:00', '19:00-19:30', '19:30-20:00', '20:00-20:30', '20:30-21:00', '18:00-19:00', '19:00-20:00', '20:00-21:00']
-const day = Array.from({ length: 15 }, (_, i) =>
+const day = Array.from({ length: 6 }, (_, i) =>
   dayjs().add(i, 'day').format('YYYY-MM-DD')
 )
 const dateTimeRange = Array.from(
