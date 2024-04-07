@@ -20,7 +20,7 @@ docker docker-compose up
 ```
 server listening on http://localhost:3000
 ```
-3.下載Postman [json檔](https://drive.google.com/file/d/1_vSTR1a3xlGvCzlGo9IqLQQ_Ch7fXcdf/view?usp=sharing)，測試註冊、登入、訂閱電子報、發送電子報與成為老師的功能，留意Postman環境變數內新增base_URL為http://localhost:3000，新增tutor_token環境變數，放入登入成功後的token
+3.下載Postman [json檔](https://drive.google.com/file/d/1_vSTR1a3xlGvCzlGo9IqLQQ_Ch7fXcdf/view?usp=sharing)，測試註冊、登入、訂閱電子報、發送電子報與成為老師的功能，留意Postman環境變數內新增base_URL為http://localhost:3000 ，新增tutor_token環境變數，放入登入成功後的token
 
 ![示範](./upload/postman.jpg)
 
