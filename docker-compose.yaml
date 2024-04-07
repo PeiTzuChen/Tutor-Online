@@ -24,7 +24,7 @@ services:
       - Redis-data:/data
 
   webapp:
-    build: .
+    image: becky0923/tutor-online:1.0
     ports:
       - 3000:3000
     environment:
